@@ -11,6 +11,7 @@ dependencies = [
 
 [dependency-groups]
 dev = ["ruff"]
+server = ["gunicorn>=26.2"]
 
 [tool.ruff]
 line-length = 100

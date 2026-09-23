@@ -1,0 +1,6 @@
+#!/bin/sh
+# Runs manage.py with the app's settings. Use as: sudo -u mettakin mettakin-manage <command>
+set -a
+. /etc/mettakin/env
+set +a
+cd {{ app_dir }} && exec .venv/bin/python manage.py "$@"

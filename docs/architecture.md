@@ -29,8 +29,8 @@ The principles the system must honor, the shapes of its data, and the tools. How
 | Database | PostgreSQL | Reliable, full-text search built in |
 | Frontend | Server-rendered HTML and plain forms. HTMX once a page truly needs it | Readable by the web, no JavaScript until it earns its place |
 | Media | Garage | Self-hosted, speaks the S3 protocol, so it's swappable |
-| Containers | Podman (leaning) | Rootless, no daemon |
-| Hosting | One small server in the EU (leaning) | No new cost. Move out when traffic needs it |
-| Secrets | Ansible Vault (leaning) | Encrypted in the repository, handed to the app as environment variables |
+| Local development | Podman | Rootless, no daemon, same database as production |
+| Server | One Debian 13 server in the EU: nginx, gunicorn, systemd, no containers | Few moving parts. The database needs no password because the app connects as its own system user |
+| Setup and secrets | Ansible and Ansible Vault, in [deploy](../deploy/README.md) | Anyone can set up their own copy with one command |
 
-Settled in [decision 9](decisions.md). The rows marked "leaning" aren't decided yet.
+Settled in decisions [9](decisions.md) and [12](decisions.md).

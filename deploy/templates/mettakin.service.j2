@@ -1,0 +1,19 @@
+[Unit]
+Description=Mettakin
+After=network.target postgresql.service
+
+[Service]
+User=mettakin
+Group=mettakin
+WorkingDirectory={{ app_dir }}
+EnvironmentFile=/etc/mettakin/env
+# No access log: URLs can carry titles of members-only experiences.
+ExecStart={{ app_dir }}/.venv/bin/gunicorn mettakin.wsgi --workers 3 --bind unix:/run/mettakin/gunicorn.sock
+RuntimeDirectory=mettakin
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

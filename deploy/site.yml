@@ -1,0 +1,237 @@
+# Sets up a fresh Debian 13 server and deploys Mettakin. Safe to run again: it only changes what differs.
+- hosts: mettakin
+  vars_files: [vars.yml, vault.yml]
+
+  tasks:
+    - name: Install system packages
+      ansible.builtin.apt:
+        name: [nginx, certbot, postgresql, git, ufw, fail2ban, unattended-upgrades, sudo, acl]
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Name the host
+      ansible.builtin.hostname:
+        name: mettakin
+
+    - name: Allow SSH with keys only
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/10-mettakin.conf
+        content: |
+          PasswordAuthentication no
+          PermitRootLogin prohibit-password
+      notify: Reload ssh
+
+    - name: Open only SSH, HTTP and HTTPS
+      ansible.builtin.command: "ufw allow {{ item }}"
+      loop: [22/tcp, 80/tcp, 443/tcp]
+      register: rule
+      changed_when: "'Skipping' not in rule.stdout"
+
+    - name: Turn the firewall on
+      ansible.builtin.command: ufw --force enable
+      register: firewall
+      changed_when: "'already' not in firewall.stdout"
+
+    - name: Install security updates automatically
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+
+    - name: Create the uv directory
+      ansible.builtin.file:
+        path: "/usr/local/lib/uv-{{ uv_version }}"
+        state: directory
+
+    - name: Install uv
+      ansible.builtin.unarchive:
+        src: "https://github.com/astral-sh/uv/releases/download/{{ uv_version }}/uv-x86_64-unknown-linux-gnu.tar.gz"
+        dest: "/usr/local/lib/uv-{{ uv_version }}"
+        remote_src: true
+        extra_opts: [--strip-components=1]
+        creates: "/usr/local/lib/uv-{{ uv_version }}/uv"
+
+    - name: Put uv on the path
+      ansible.builtin.file:
+        src: "/usr/local/lib/uv-{{ uv_version }}/uv"
+        dest: /usr/local/bin/uv
+        state: link
+
+    - name: Create the app user
+      ansible.builtin.user:
+        name: mettakin
+        system: true
+        home: /srv/mettakin
+        shell: /usr/sbin/nologin
+
+    - name: Let nginx read static files
+      ansible.builtin.file:
+        path: /srv/mettakin
+        mode: "0755"
+
+    # The app connects over the local socket as its own system user, so the database needs no password.
+    - name: Check the database role
+      ansible.builtin.command: psql -tAc "SELECT 1 FROM pg_roles WHERE rolname = 'mettakin'"
+      become: true
+      become_user: postgres
+      register: role
+      changed_when: false
+
+    - name: Create the database role
+      ansible.builtin.command: createuser mettakin
+      become: true
+      become_user: postgres
+      when: role.stdout != "1"
+
+    - name: Check the database
+      ansible.builtin.command: psql -tAc "SELECT 1 FROM pg_database WHERE datname = 'mettakin'"
+      become: true
+      become_user: postgres
+      register: database
+      changed_when: false
+
+    - name: Create the database
+      ansible.builtin.command: createdb --owner mettakin mettakin
+      become: true
+      become_user: postgres
+      when: database.stdout != "1"
+
+    - name: Get the code
+      ansible.builtin.git:
+        repo: "{{ repo }}"
+        dest: "{{ app_dir }}"
+        version: "{{ branch }}"
+      become: true
+      become_user: mettakin
+      notify: Restart mettakin
+
+    - name: Install Python dependencies
+      ansible.builtin.command: uv sync --locked --no-dev --group server
+      args:
+        chdir: "{{ app_dir }}"
+      environment:
+        UV_PYTHON_DOWNLOADS: never
+      become: true
+      become_user: mettakin
+      register: sync
+      changed_when: "'Installed' in sync.stderr"
+      notify: Restart mettakin
+
+    - name: Create the settings directory
+      ansible.builtin.file:
+        path: /etc/mettakin
+        state: directory
+        owner: root
+        group: mettakin
+        mode: "0750"
+
+    - name: Write the settings
+      ansible.builtin.template:
+        src: templates/env.j2
+        dest: /etc/mettakin/env
+        owner: root
+        group: mettakin
+        mode: "0640"
+      notify: Restart mettakin
+
+    - name: Install the manage command
+      ansible.builtin.template:
+        src: templates/mettakin-manage.j2
+        dest: /usr/local/bin/mettakin-manage
+        mode: "0755"
+
+    - name: Apply database migrations
+      ansible.builtin.command: mettakin-manage migrate --noinput
+      become: true
+      become_user: mettakin
+      register: migrate
+      changed_when: "'No migrations to apply' not in migrate.stdout"
+
+    - name: Collect static files
+      ansible.builtin.command: mettakin-manage collectstatic --noinput
+      become: true
+      become_user: mettakin
+      register: static
+      changed_when: "not static.stdout.startswith('0 static files copied')"
+
+    - name: Install the app service
+      ansible.builtin.template:
+        src: templates/mettakin.service.j2
+        dest: /etc/systemd/system/mettakin.service
+      notify: Restart mettakin
+
+    - name: Start the app
+      ansible.builtin.systemd_service:
+        name: mettakin
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Limit sign-in and join attempts
+      ansible.builtin.copy:
+        dest: /etc/nginx/conf.d/mettakin-limits.conf
+        content: "limit_req_zone $binary_remote_addr zone=mettakin_auth:10m rate=10r/m;\n"
+      notify: Reload nginx
+
+    - name: Remove the default site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Reload nginx
+
+    - name: Create the certificate challenge directory
+      ansible.builtin.file:
+        path: /var/www/letsencrypt
+        state: directory
+
+    - name: Check for a certificate
+      ansible.builtin.stat:
+        path: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+      register: cert
+
+    - name: Serve plain HTTP until there is a certificate
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-enabled/mettakin
+      vars:
+        has_cert: false
+      when: not cert.stat.exists
+      notify: Reload nginx
+
+    - name: Apply nginx changes before asking for a certificate
+      ansible.builtin.meta: flush_handlers
+
+    - name: Get a certificate
+      ansible.builtin.command: >
+        certbot certonly --webroot -w /var/www/letsencrypt
+        -d {{ domain }} -d www.{{ domain }}
+        -m {{ admin_email }} --agree-tos --non-interactive
+        --deploy-hook "systemctl reload nginx"
+      args:
+        creates: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
+
+    - name: Serve HTTPS
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-enabled/mettakin
+      vars:
+        has_cert: true
+      notify: Reload nginx
+
+  handlers:
+    - name: Reload ssh
+      ansible.builtin.systemd_service:
+        name: ssh
+        state: reloaded
+
+    - name: Restart mettakin
+      ansible.builtin.systemd_service:
+        name: mettakin
+        state: restarted
+        daemon_reload: true
+
+    - name: Reload nginx
+      ansible.builtin.systemd_service:
+        name: nginx
+        state: reloaded
