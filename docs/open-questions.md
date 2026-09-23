@@ -16,7 +16,7 @@ What we haven't figured out. Pick one, think about it, open an issue. This list 
 
 ## Privacy and law
 
-- **GDPR special-category data.** Experiences can reveal religious or philosophical beliefs, which is special-category data under GDPR Art. 9. What consent and protection does that require?
+- **GDPR review.** The approach is settled ([decision 11](decisions.md)), but no lawyer has reviewed it yet. Can someone with GDPR experience check it?
 - **Deleting and leaving.** A member leaves. What happens to their experiences and the responses to them?
 - **Legal home.** When does Mettakin need a legal entity, and which kind? A Polish association (stowarzyszenie), a foundation, something else?
 
