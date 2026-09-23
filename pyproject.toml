@@ -14,6 +14,7 @@ dev = ["ruff"]
 
 [tool.ruff]
 line-length = 100
+extend-exclude = ["*/migrations/*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "DJ", "S"]
