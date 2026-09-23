@@ -81,6 +81,20 @@ class WriteTests(TestCase):
         self.assertEqual(Phenomenon.objects.count(), 2)
         self.assertEqual(Phenomenon.objects.get(slug="light").experiences.count(), 2)
 
+    def test_tags_keep_any_language(self):
+        self.client.force_login(member())
+        self.post(phenomena_names="światło, 光")
+        self.assertEqual(
+            sorted(Phenomenon.objects.values_list("slug", flat=True)), ["światło", "光"]
+        )
+        self.assertEqual(self.client.get(reverse("phenomenon", args=["光"])).status_code, 200)
+
+    def test_too_many_tags_are_refused_not_crashed(self):
+        self.client.force_login(member())
+        response = self.post(phenomena_names=",".join(f"t{i}" for i in range(11)))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Experience.objects.exists())
+
     def test_response_links_to_its_parent(self):
         author = member()
         parent = experience(author)
@@ -106,7 +120,7 @@ class ResonanceTests(TestCase):
 class TagPageTests(TestCase):
     def test_tag_seen_only_in_community_posts_is_hidden_from_visitors(self):
         shown = experience(member(), Experience.Visibility.COMMUNITY)
-        shown.phenomena.set(Phenomenon.from_names("Test phenomenon"))
+        shown.phenomena.set([Phenomenon.named("Test phenomenon")])
         url = reverse("phenomenon", args=["test-phenomenon"])
         self.assertEqual(self.client.get(url).status_code, 404)
         self.assertNotContains(self.client.get(reverse("home")), "Test phenomenon")

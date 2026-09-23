@@ -1,5 +1,5 @@
 FROM docker.io/library/python:3.13-slim
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /bin/uv
 
 # The environment lives outside /app, so mounting the code for development doesn't hide it.
 ENV UV_PROJECT_ENVIRONMENT=/venv PATH=/venv/bin:$PATH PYTHONUNBUFFERED=1

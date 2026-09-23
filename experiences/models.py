@@ -7,8 +7,10 @@ from members.models import CONSENT_VERSION
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=60)
-    slug = models.SlugField(max_length=60, unique=True)
+    MAX_LENGTH = 60
+
+    name = models.CharField(max_length=MAX_LENGTH)
+    slug = models.SlugField(max_length=MAX_LENGTH, unique=True, allow_unicode=True)
 
     class Meta:
         abstract = True
@@ -18,12 +20,17 @@ class Tag(models.Model):
         return self.name
 
     @classmethod
-    def from_names(cls, text):
-        """Turns "Light, fear in meditation" into tags, creating the new ones."""
-        names = {slugify(n): n.strip() for n in text.split(",") if slugify(n)}
-        return [
-            cls.objects.get_or_create(slug=s, defaults={"name": n})[0] for s, n in names.items()
-        ]
+    def named(cls, name):
+        """The tag for this name, created if new. None when the name has no letters."""
+        slug = slugify(name, allow_unicode=True)
+        if not slug:
+            return None
+        return cls.objects.get_or_create(slug=slug, defaults={"name": name.strip()})[0]
+
+    @classmethod
+    def from_names(cls, names):
+        tags = (cls.named(name) for name in names)
+        return list({tag.pk: tag for tag in tags if tag}.values())
 
 
 class Practice(Tag):
@@ -45,7 +52,7 @@ class ExperienceQuerySet(models.QuerySet):
         visible = self.filter(author__consent_version=CONSENT_VERSION)
         if not member.is_authenticated:
             visible = visible.filter(visibility=Experience.Visibility.PUBLIC)
-        return visible.select_related("author", "practice")
+        return visible.select_related("author", "author__operator", "practice")
 
 
 class Experience(models.Model):
@@ -57,7 +64,7 @@ class Experience(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="experiences"
     )
     title = models.CharField(max_length=120)
-    body = models.TextField()
+    body = models.TextField(max_length=20_000)
     practice = models.ForeignKey(
         Practice, null=True, blank=True, on_delete=models.SET_NULL, related_name="experiences"
     )
@@ -81,11 +88,11 @@ class Experience(models.Model):
 
     @property
     def slug(self):
-        return slugify(self.title) or "-"
+        return slugify(self.title, allow_unicode=True) or "-"
 
 
 class Resonance(models.Model):
-    """ "This happened to me too." """
+    """A member saying: this happened to me too."""
 
     member = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="resonances"
