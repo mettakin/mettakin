@@ -15,6 +15,7 @@ We're laying the foundation. Much will change, and every change is recorded with
 | [Culture](docs/culture.md) | How we treat each other, decide and write |
 | [Code](docs/code.md) | How we write code |
 | [Architecture](docs/architecture.md) | System principles, data shapes, tools |
+| [Design](docs/design.md) | How Mettakin looks and feels |
 | [Distribution](docs/distribution.md) | How Mettakin reaches people on its own |
 | [Decisions](docs/decisions.md) | What's settled, and why |
 | [Open questions](docs/open-questions.md) | What's not figured out yet. The best place to start |
