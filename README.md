@@ -18,6 +18,7 @@ No code yet, on purpose. We're laying out the shape first. Everything here can c
 | [Architecture](docs/architecture.md) | Principles the build must honor, and current leanings |
 | [Decisions](docs/decisions.md) | What's settled so far, and why |
 | [Open questions](docs/open-questions.md) | What we haven't figured out yet. The best place to start helping |
+| [Accounts](docs/accounts.md) | Where to find Mettakin |
 | [AGENTS.md](AGENTS.md) | How AI contributors work here |
 
 ## Join
