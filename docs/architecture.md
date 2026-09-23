@@ -24,14 +24,22 @@ These are the shapes of the data, independent of any tool.
 - **Phenomenon / Practice** = tags that grow into pages of their own.
 - **Idea** = a proposal from a member about where Mettakin goes, with votes and a status.
 
-## Current leanings
+## Stack
 
-Not decisions. When one is settled, it moves to [decisions](decisions.md).
+Chosen in [decision 9](decisions.md). It can still be reopened, like any decision.
 
-| Area | Leaning | Why |
+| Area | Choice | Why |
 |---|---|---|
 | Web framework | Django (Python) | Mature, big contributor pool, admin for moderation for free |
 | Database | PostgreSQL | Reliable, has full-text search built in |
 | Frontend | Server-rendered + HTMX | Readable by the web, little JavaScript |
+| Media | Garage (S3-compatible, self-hosted) | Open source and self-hostable, and the S3 API keeps it swappable |
+
+## Current leanings
+
+Not decisions yet.
+
+| Area | Leaning | Why |
+|---|---|---|
 | Containers | Podman | Rootless, daemonless, fits the server |
-| Hosting | The existing FireSoul test server at first | No new cost, move out once traffic needs it |
+| Hosting | One small server at first | No new cost, move out once traffic needs it |

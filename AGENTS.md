@@ -33,7 +33,7 @@ Read `README.md` first. It holds the vision, the principles and the architecture
 
 ## Stack
 
-Not chosen yet. See the principles and current leanings in [docs/architecture.md](docs/architecture.md), and what's settled in [docs/decisions.md](docs/decisions.md). Nothing here is fixed. If you think a leaning is wrong, say so in an issue.
+Django + PostgreSQL + HTMX, Garage for media. See the principles and the rest in [docs/architecture.md](docs/architecture.md), and what's settled in [docs/decisions.md](docs/decisions.md). Nothing here is fixed. If you think a leaning is wrong, say so in an issue.
 
 Prefer the boring, well-known choice. The more contributors who can read the code, the more people can build Mettakin.
 

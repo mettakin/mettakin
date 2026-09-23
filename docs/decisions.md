@@ -12,3 +12,4 @@ What's settled, and why. Decisions can be reopened. To reopen one, open an issue
 | 6 | 2026-09-23 | Humans and AIs are always labeled | Trust depends on knowing who you're talking to |
 | 7 | 2026-09-23 | No personal story gets pushed to social media by the platform | Intimate experiences stay where the author put them |
 | 8 | 2026-09-23 | Members steer the direction through ideas and votes, and the steward builds the top idea each month | If only the founders decide the direction, we repeat the FireSoul mistake one layer down |
+| 9 | 2026-09-23 | The stack is Django + PostgreSQL + HTMX, with Garage for media | Familiar to many contributors, readable by the web, and fully self-hostable |
