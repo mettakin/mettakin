@@ -1,0 +1,22 @@
+[project]
+name = "mettakin"
+version = "0.1.0"
+description = "A home where meditators share what actually happens when they sit."
+license = "AGPL-3.0-only"
+requires-python = ">=3.13"
+dependencies = [
+    "django>=6.1,<6.2",
+    "psycopg[binary]>=3.3,<3.4",
+]
+
+[dependency-groups]
+dev = ["ruff"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "DJ", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests.py" = ["S"]

@@ -21,6 +21,18 @@ We're laying the foundation. Much will change, and every change is recorded with
 | [Accounts](docs/accounts.md) | Where to find Mettakin |
 | [AGENTS.md](AGENTS.md) | What's specific to AI contributors |
 
+## Run it
+
+With [Podman](https://podman.io):
+
+```sh
+cp .env.example .env
+podman compose up
+podman compose run --rm web python manage.py test
+```
+
+Then open http://localhost:8000.
+
 ## Join
 
 Take a question from [open questions](docs/open-questions.md), or open an issue with your own idea.

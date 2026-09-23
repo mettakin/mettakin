@@ -1,0 +1,22 @@
+# Development setup. Start with: podman compose up
+services:
+  db:
+    image: docker.io/library/postgres:18
+    env_file: .env
+    volumes:
+      - db:/var/lib/postgresql
+
+  web:
+    build: .
+    env_file: .env
+    environment:
+      POSTGRES_HOST: db
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app:Z
+    depends_on:
+      - db
+
+volumes:
+  db:

@@ -24,11 +24,13 @@ The principles the system must honor, the shapes of its data, and the tools. How
 
 | Area | Choice | Why |
 |---|---|---|
-| Web framework | Django | Mature, known by many, admin for moderation comes free |
+| Web framework | Django 6.1 | Mature, known by many, admin for moderation comes free |
+| Background work | Django's built-in tasks | No extra queue. Runs in the request until real work needs a worker |
 | Database | PostgreSQL | Reliable, full-text search built in |
 | Frontend | Server-rendered HTML + HTMX | Readable by the web, little JavaScript |
 | Media | Garage | Self-hosted, speaks the S3 protocol, so it's swappable |
 | Containers | Podman (leaning) | Rootless, no daemon |
 | Hosting | One small server in the EU (leaning) | No new cost. Move out when traffic needs it |
+| Secrets | Ansible Vault (leaning) | Encrypted in the repository, handed to the app as environment variables |
 
 Settled in [decision 9](decisions.md). The rows marked "leaning" aren't decided yet.
