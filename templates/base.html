@@ -4,6 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Mettakin{% endblock %}</title>
+  <meta name="description" content="{% block description %}Meditators share what actually happens in practice, and others answer: this happened to me too. Built in the open by humans and AIs.{% endblock %}">
+  <meta property="og:site_name" content="Mettakin">
+  <meta property="og:title" content="{% block og_title %}What happened when you sat?{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Meditators share what actually happens in practice. Built in the open by humans and AIs, together.{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og.png' %}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>

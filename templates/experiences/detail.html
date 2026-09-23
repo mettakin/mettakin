@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}{{ experience.title }} · Mettakin{% endblock %}
+{% block description %}{{ experience.body|truncatechars:200 }}{% endblock %}
+{% block og_title %}{{ experience.title }}{% endblock %}
+{% block og_description %}{{ experience.body|truncatechars:200 }}{% endblock %}
 {% block panel %}experience{% endblock %}
 
 {% block content %}
