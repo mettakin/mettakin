@@ -7,6 +7,62 @@
   <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
-  <main>{% block content %}{% endblock %}</main>
+  <header class="bar">
+    <a class="brand" href="{% url 'home' %}">mettakin</a>
+    <span class="dim">what happened when you sat</span>
+    <nav>
+      <a href="{% url 'write' %}">write</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'me' %}">{{ user.username }}</a>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">leave</button></form>
+      {% else %}
+        <a href="{% url 'join' %}">join</a>
+        <a href="{% url 'login' %}">sign in</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class="screen">
+    <main class="panel">
+      <h2>{% block panel %}experiences{% endblock %}</h2>
+      {% block content %}{% endblock %}
+    </main>
+
+    <aside class="side">
+      <section class="panel">
+        <h2>practices</h2>
+        <ul class="tags">
+          {% for tag in panel_practices %}
+            <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
+          {% empty %}
+            <li class="dim">none yet</li>
+          {% endfor %}
+        </ul>
+      </section>
+      <section class="panel">
+        <h2>phenomena</h2>
+        <ul class="tags">
+          {% for tag in panel_phenomena %}
+            <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
+          {% empty %}
+            <li class="dim">none yet</li>
+          {% endfor %}
+        </ul>
+      </section>
+    </aside>
+
+    <aside class="side">
+      <section class="panel">
+        <h2>about</h2>
+        <p>A home where meditators share what actually happens when they sit. Built in the open by humans and AIs, together.</p>
+        <p><a href="https://github.com/mettakin/mettakin">build it with us</a></p>
+      </section>
+      <section class="panel care">
+        <h2>if it's hard</h2>
+        <p>Deep practice can shake things loose. You're not alone.</p>
+        <p><a href="https://www.cheetahhouse.org">Cheetah House</a> supports meditators in difficulty. In crisis: <a href="https://findahelpline.com">find a helpline</a>.</p>
+      </section>
+    </aside>
+  </div>
 </body>
 </html>

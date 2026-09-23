@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% for experience in experiences %}
+    {% include "experiences/_item.html" %}
+  {% empty %}
+    <p>Nothing here yet.</p>
+    <p><a href="{% url 'write' %}">Be the first: write what happened.</a></p>
+  {% endfor %}
+{% endblock %}

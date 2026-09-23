@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Sign in · Mettakin{% endblock %}
+{% block panel %}sign in{% endblock %}
+
+{% block content %}
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button>sign in</button>
+  </form>
+  <p class="dim">New here? <a href="{% url 'join' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Join</a>.</p>
+{% endblock %}

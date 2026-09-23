@@ -1,11 +1,130 @@
 :root {
   color-scheme: light dark;
-  font-family: system-ui, sans-serif;
+  --bg: #f6efe2;
+  --fg: #2b2419;
+  --dim: #7a6a55;
+  --line: #cdbd9f;
+  --accent: #a2600e;
+  font-family: ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 15px;
   line-height: 1.6;
 }
 
-main {
-  max-width: 40rem;
-  margin: 4rem auto;
-  padding: 0 1rem;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1712;
+    --fg: #e8dcc8;
+    --dim: #9a8b75;
+    --line: #4a3f33;
+    --accent: #e0a040;
+  }
 }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+h1 { font-size: 1.25rem; margin: 0 0 .25rem; }
+p { margin: 0 0 .8rem; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+.dim { color: var(--dim); }
+
+/* Top bar */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  align-items: baseline;
+  padding: .6rem .8rem;
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-weight: bold; }
+.bar nav { margin-left: auto; display: flex; gap: 1rem; }
+.bar form { display: inline; }
+
+/* Panels, titled on their border like btop */
+.screen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14rem 16rem;
+  gap: .8rem;
+  padding: .8rem;
+}
+.side { display: flex; flex-direction: column; gap: .8rem; }
+
+.panel {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1rem .9rem .6rem;
+  margin-top: .5rem;
+}
+.panel > h2 {
+  position: absolute;
+  top: -.75em;
+  left: .6rem;
+  margin: 0;
+  padding: 0 .4rem;
+  background: var(--bg);
+  color: var(--accent);
+  font-size: .85rem;
+  font-weight: normal;
+}
+
+@media (max-width: 60rem) {
+  .screen { grid-template-columns: 1fr; }
+}
+
+/* Content */
+.item { padding: .5rem 0; border-bottom: 1px dashed var(--line); }
+.item:last-child { border-bottom: 0; }
+.sub { font-size: .85rem; color: var(--accent); font-weight: normal; margin: 1.5rem 0 .5rem; }
+.body { max-width: 42rem; }
+.label {
+  display: inline-block;
+  padding: 0 .35rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-size: .8rem;
+}
+.tags li { display: flex; justify-content: space-between; }
+.care { border-color: var(--accent); }
+
+/* Forms */
+.form > div { margin-bottom: 1rem; }
+label { display: block; margin-bottom: .25rem; }
+.helptext { display: block; color: var(--dim); font-size: .85rem; }
+input[type="text"], input[type="password"], textarea {
+  width: 100%;
+  padding: .4rem;
+  font: inherit;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+}
+textarea { min-height: 14rem; }
+input[type="radio"], input[type="checkbox"] { accent-color: var(--accent); }
+
+button {
+  font: inherit;
+  padding: .3rem .8rem;
+  color: var(--bg);
+  background: var(--accent);
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+button.on { outline: 2px solid var(--fg); }
+button.quiet { color: var(--accent); background: transparent; border: 1px solid var(--line); }
+button.link { padding: 0; color: var(--accent); background: none; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 1rem 0; }
+.actions form { margin: 0; }

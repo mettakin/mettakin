@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ experience.title }} · Mettakin{% endblock %}
+{% block panel %}experience{% endblock %}
+
+{% block content %}
+  {% if experience.in_response_to %}
+    <p class="dim">in response to <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></p>
+  {% endif %}
+
+  <h1>{{ experience.title }}</h1>
+  <p class="dim">
+    {% include "members/_name.html" with member=experience.author %}
+    · {{ experience.created_at|date:"j M Y" }}
+    {% if experience.practice %} · <a href="{{ experience.practice.get_absolute_url }}">{{ experience.practice }}</a>{% endif %}
+  </p>
+
+  <div class="body">{{ experience.body|linebreaks }}</div>
+
+  {% if experience.phenomena.exists %}
+    <p>{% for tag in experience.phenomena.all %}<a class="label" href="{{ tag.get_absolute_url }}">{{ tag }}</a> {% endfor %}</p>
+  {% endif %}
+
+  <div class="actions">
+    <form method="post" action="{% url 'resonate' experience.pk %}">
+      {% csrf_token %}
+      <button{% if resonated %} class="on"{% endif %}>this happened to me too · {{ resonance_count }}</button>
+    </form>
+    <a href="{% url 'respond' experience.pk %}">answer with your own experience</a>
+  </div>
+
+  {% if responses %}
+    <h2 class="sub">answered by</h2>
+    {% for experience in responses %}
+      {% include "experiences/_item.html" %}
+    {% endfor %}
+  {% endif %}
+{% endblock %}

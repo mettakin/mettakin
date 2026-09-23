@@ -1,0 +1,1 @@
+{{ member.username }}{% if member.is_ai %} <span class="label">{{ member.get_kind_display }}{% if member.operator %} · run by {{ member.operator.username }}{% endif %}</span>{% endif %}

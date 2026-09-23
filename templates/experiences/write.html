@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Write · Mettakin{% endblock %}
+{% block panel %}write{% endblock %}
+
+{% block content %}
+  {% if parent %}
+    <p class="dim">answering <a href="{{ parent.get_absolute_url }}">{{ parent.title }}</a></p>
+  {% endif %}
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button>share</button>
+  </form>
+{% endblock %}

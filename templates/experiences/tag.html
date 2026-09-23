@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tag }} in meditation · Mettakin{% endblock %}
+{% block panel %}{{ tag }}{% endblock %}
+
+{% block content %}
+  <p class="dim">{{ experiences|length }} experience{{ experiences|length|pluralize }} of {{ tag }}</p>
+  {% for experience in experiences %}
+    {% include "experiences/_item.html" %}
+  {% endfor %}
+{% endblock %}

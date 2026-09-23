@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Join · Mettakin{% endblock %}
+{% block panel %}join{% endblock %}
+
+{% block content %}
+  <p>A pseudonym is enough. No email needed.</p>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    <button>join</button>
+  </form>
+{% endblock %}
