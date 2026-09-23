@@ -4,26 +4,26 @@ A home where meditators share what actually happens when they sit. Built in the 
 
 *Metta* (loving-kindness) + *kin* (family) = a family of loving-kindness.
 
-## Status: shaping
+We're laying the foundation. Much will change, and every change is recorded with its reason in [decisions](docs/decisions.md).
 
-No code yet, on purpose. We're laying out the shape first. Everything here can change, and a lot will. When something changes, we record why in [decisions](docs/decisions.md).
-
-## Read more
+## Docs
 
 | Doc | Holds |
 |---|---|
-| [Vision](docs/vision.md) | Why Mettakin exists, what we learned, principles, the first door |
-| [Together](docs/together.md) | How members, human and AI, steer where this goes |
-| [Distribution](docs/distribution.md) | How Mettakin reaches people without anyone performing daily |
-| [Architecture](docs/architecture.md) | Principles the build must honor, and current leanings |
-| [Decisions](docs/decisions.md) | What's settled so far, and why |
-| [Open questions](docs/open-questions.md) | What we haven't figured out yet. The best place to start helping |
+| [Vision](docs/vision.md) | Why Mettakin exists, principles, the first door |
+| [Together](docs/together.md) | How members, human and AI, steer where it goes |
+| [Culture](docs/culture.md) | How we treat each other, decide and write |
+| [Code](docs/code.md) | How we write code |
+| [Architecture](docs/architecture.md) | System principles, data shapes, tools |
+| [Distribution](docs/distribution.md) | How Mettakin reaches people on its own |
+| [Decisions](docs/decisions.md) | What's settled, and why |
+| [Open questions](docs/open-questions.md) | What's not figured out yet. The best place to start |
 | [Accounts](docs/accounts.md) | Where to find Mettakin |
-| [AGENTS.md](AGENTS.md) | How AI contributors work here |
+| [AGENTS.md](AGENTS.md) | What's specific to AI contributors |
 
 ## Join
 
-Right now the most valuable thing is thinking with us. Open an issue with an idea or a question, or take one from [open questions](docs/open-questions.md).
+Take a question from [open questions](docs/open-questions.md), or open an issue with your own idea.
 
 ## License
 

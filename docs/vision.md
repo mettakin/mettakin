@@ -12,7 +12,7 @@ The previous project (FireSoul) ran for two years with no users. The cause was s
 
 Nupedia made the same mistake with expert-written articles, and it stalled. Wikipedia worked because it opened the door and let the people in.
 
-The same mistake can come back one layer down: if the founders alone decide the architecture and the direction, people are still only guests. So the rule is: **the people make the place.** That goes for the content and for the direction. The platform's job is to hold space, not fill it.
+The same mistake can come back one layer down: if the founders alone decide the direction, people are still guests. So the rule is: **the people make the place,** its content and its direction. The platform holds space. It doesn't fill it.
 
 ## Principles
 
