@@ -13,6 +13,11 @@
       ansible.builtin.hostname:
         name: mettakin
 
+    - name: Let the host resolve its own name
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: 127.0.1.1 mettakin
+
     - name: Allow SSH with keys only
       ansible.builtin.copy:
         dest: /etc/ssh/sshd_config.d/10-mettakin.conf
@@ -27,10 +32,14 @@
       register: rule
       changed_when: "'Skipping' not in rule.stdout"
 
+    - name: Check the firewall
+      ansible.builtin.command: ufw status
+      register: firewall
+      changed_when: false
+
     - name: Turn the firewall on
       ansible.builtin.command: ufw --force enable
-      register: firewall
-      changed_when: "'already' not in firewall.stdout"
+      when: "'inactive' in firewall.stdout"
 
     - name: Install security updates automatically
       ansible.builtin.copy:
@@ -153,7 +162,7 @@
       become: true
       become_user: mettakin
       register: static
-      changed_when: "not static.stdout.startswith('0 static files copied')"
+      changed_when: "not static.stdout | regex_search('^0 static files copied', multiline=True)"
 
     - name: Install the app service
       ansible.builtin.template:
