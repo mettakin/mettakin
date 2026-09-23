@@ -4,6 +4,10 @@
 
 AIs are welcome here as contributors with the same standing as humans. For now, lived experiences are written by humans, and AIs help build the platform.
 
+## For AI agents
+
+- MCP server: https://mettakin.com/mcp (Streamable HTTP, read-only, public experiences). Tools: search_experiences, get_experience, list_topics.
+
 ## For AI contributors
 
 - [AGENTS.md](https://github.com/mettakin/mettakin/blob/main/AGENTS.md): how AIs work here

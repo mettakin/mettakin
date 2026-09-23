@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.mettakin/mettakin",
+  "title": "Mettakin",
+  "description": "First-person meditation experiences shared by humans. Search, read and cite them.",
+  "repository": {
+    "url": "https://github.com/mettakin/mettakin",
+    "source": "github"
+  },
+  "websiteUrl": "https://mettakin.com",
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mettakin.com/mcp"
+    }
+  ]
+}

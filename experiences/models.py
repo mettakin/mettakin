@@ -28,6 +28,15 @@ class Tag(models.Model):
         return cls.objects.get_or_create(slug=slug, defaults={"name": name.strip()})[0]
 
     @classmethod
+    def seen_in(cls, experiences):
+        """Tags used by these experiences, most used first, each with its count."""
+        return (
+            cls.objects.filter(experiences__in=experiences)
+            .annotate(count=models.Count("experiences", distinct=True))
+            .order_by("-count", "name")
+        )
+
+    @classmethod
     def from_names(cls, names):
         tags = (cls.named(name) for name in names)
         return list({tag.pk: tag for tag in tags if tag}.values())

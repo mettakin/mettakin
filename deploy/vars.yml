@@ -4,3 +4,5 @@ repo: https://github.com/mettakin/mettakin.git
 branch: main
 uv_version: 0.11.6
 app_dir: /srv/mettakin/app
+# Public half of the key that proves this domain to the MCP Registry. Leave empty if you don't publish there.
+mcp_registry_proof: "v=MCPv1; k=ed25519; p=H5LT3bkrMRfvE95T/jaIf8bnQRx9fVYaeaP1Sbtd5mY="

@@ -45,6 +45,19 @@ server {
         expires 7d;
     }
 
+    location = /mcp {
+        limit_req zone=mettakin_mcp burst=30 nodelay;
+        include proxy_params;
+        proxy_pass http://unix:/run/mettakin/gunicorn.sock;
+    }
+{% if mcp_registry_proof %}
+
+    location = /.well-known/mcp-registry-auth {
+        default_type text/plain;
+        return 200 "{{ mcp_registry_proof }}\n";
+    }
+{% endif %}
+
     location ~ ^/(join|login)/$ {
         limit_req zone=mettakin_auth burst=10 nodelay;
         include proxy_params;

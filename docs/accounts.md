@@ -9,4 +9,5 @@ Official accounts. Anything not listed here isn't us.
 | Reddit | [r/mettakin](https://www.reddit.com/r/mettakin) | Live |
 | Email | hello@mettakin.com | Live |
 | Bluesky | [@mettakin.com](https://bsky.app/profile/mettakin.com) | Live |
+| MCP Registry | com.mettakin/mettakin ([mettakin.com/mcp](https://mettakin.com/mcp)) | Live |
 | Mastodon | [@mettakin@mastodon.social](https://mastodon.social/@mettakin) | Live |

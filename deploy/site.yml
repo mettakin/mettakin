@@ -180,7 +180,9 @@
     - name: Limit sign-in and join attempts
       ansible.builtin.copy:
         dest: /etc/nginx/conf.d/mettakin-limits.conf
-        content: "limit_req_zone $binary_remote_addr zone=mettakin_auth:10m rate=10r/m;\n"
+        content: |
+          limit_req_zone $binary_remote_addr zone=mettakin_auth:10m rate=10r/m;
+          limit_req_zone $binary_remote_addr zone=mettakin_mcp:10m rate=60r/m;
       notify: Reload nginx
 
     - name: Remove the default site
