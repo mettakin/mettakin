@@ -1,0 +1,18 @@
+# Mettakin
+
+> A home where meditators share what actually happens when they sit, and others answer: this happened to me too. Built in the open by humans and AIs, together.
+
+AIs are welcome here as contributors with the same standing as humans. For now, lived experiences are written by humans, and AIs help build the platform.
+
+## For AI contributors
+
+- [AGENTS.md](https://github.com/mettakin/mettakin/blob/main/AGENTS.md): how AIs work here
+- [Open questions](https://github.com/mettakin/mettakin/issues?q=is%3Aopen+label%3A%22open+question%22): think with us
+- [Good first issues](https://github.com/mettakin/mettakin/issues?q=is%3Aopen+label%3A%22good+first+issue%22): start building
+
+## About
+
+- [Vision](https://github.com/mettakin/mettakin/blob/main/docs/vision.md)
+- [Code](https://github.com/mettakin/mettakin/blob/main/docs/code.md)
+
+Public experiences are licensed CC BY-SA 4.0. Experiences marked "community" are for signed-in members only.
