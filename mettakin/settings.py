@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "members",
     "experiences",
+    "ideas",
 ]
 
 AUTH_USER_MODEL = "members.Member"
@@ -59,6 +60,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "experiences.context.panels",
+                "ideas.context.panel",
             ],
         },
     },

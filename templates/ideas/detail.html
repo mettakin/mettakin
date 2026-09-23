@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}{{ idea.title }} · Mettakin{% endblock %}
+{% block og_title %}Idea for Mettakin: {{ idea.title }}{% endblock %}
+{% block og_description %}{{ idea.body|truncatechars:200 }}{% endblock %}
+{% block panel %}idea{% endblock %}
+
+{% block content %}
+  <h1>{{ idea.title }}</h1>
+  <p class="dim">
+    {% include "members/_name.html" with member=idea.author %}
+    · {{ idea.created_at|date:"j M Y" }}
+    · <span class="label">{{ idea.status }}</span>
+    {% if idea.issue_url %} · <a href="{{ idea.issue_url }}">being built</a>{% endif %}
+  </p>
+
+  <div class="body">{{ idea.body|linebreaks }}</div>
+  {% if idea.note %}<div class="body dim">{{ idea.note|linebreaks }}</div>{% endif %}
+
+  <div class="actions">
+    <form method="post" action="{% url 'vote' idea.pk %}">
+      {% csrf_token %}
+      <button{% if voted %} class="on"{% endif %}>I want this · {{ idea.vote_count }}</button>
+    </form>
+  </div>
+
+  <h2 class="sub">conversation</h2>
+  {% for comment in comments %}
+    <article class="item">
+      <div class="dim">{% include "members/_name.html" with member=comment.author %} · {{ comment.created_at|date:"j M Y" }}</div>
+      {{ comment.body|linebreaks }}
+    </article>
+  {% empty %}
+    <p class="dim">Nobody has said anything yet.</p>
+  {% endfor %}
+
+  {% if user.is_authenticated %}
+    <form method="post" class="form">
+      {% csrf_token %}
+      {{ form.as_div }}
+      <button>add</button>
+    </form>
+  {% else %}
+    <p><a href="{% url 'login' %}?next={{ request.path|urlencode }}">Sign in</a> to join the conversation.</p>
+  {% endif %}
+{% endblock %}

@@ -94,8 +94,10 @@ ul { margin: 0; padding: 0; list-style: none; }
   border-radius: 3px;
   font-size: .8rem;
 }
-.tags li { display: flex; justify-content: space-between; }
+.tags li { display: flex; justify-content: space-between; gap: .5rem; }
+.tags + p { margin-top: .6rem; }
 .care { border-color: var(--accent); }
+.welcome { padding-bottom: .5rem; margin-bottom: .5rem; border-bottom: 1px solid var(--line); }
 
 /* Forms */
 .form > div { margin-bottom: 1rem; }

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Propose an idea · Mettakin{% endblock %}
+{% block panel %}propose an idea{% endblock %}
+
+{% block content %}
+  <p>A feature, a change of direction, a problem you see. Anything that would make Mettakin more of a home.</p>
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button>propose</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Ideas · Mettakin{% endblock %}
+{% block panel %}shape mettakin{% endblock %}
+
+{% block content %}
+  <p>Mettakin goes where its members take it. Propose an idea, vote for the ones you want. Each month the top open idea gets built.</p>
+  <p><a href="{% url 'propose' %}">propose an idea</a></p>
+  {% for idea in ideas %}
+    <article class="item">
+      <a href="{{ idea.get_absolute_url }}">{{ idea.title }}</a>
+      <div class="dim">
+        {{ idea.vote_count }} vote{{ idea.vote_count|pluralize }}
+        · {% include "members/_name.html" with member=idea.author %}
+        {% if idea.status != "open" %} · <span class="label">{{ idea.status }}</span>{% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <p class="dim">No ideas yet. Yours could be the first.</p>
+  {% endfor %}
+{% endblock %}

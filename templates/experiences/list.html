@@ -1,6 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+  {% if not user.is_authenticated %}
+    <section class="welcome">
+      <p><strong>Something happened when you sat, and you've had nowhere to tell it.</strong></p>
+      <p>Here meditators write what actually happens in practice. When you read something that happened to you too, you say so.</p>
+      <p><a href="{% url 'write' %}">write what happened</a> · <a href="{% url 'ideas' %}">shape where this goes</a></p>
+    </section>
+  {% endif %}
   {% for experience in experiences %}
     {% include "experiences/_item.html" %}
   {% empty %}

@@ -21,6 +21,7 @@
     <span class="dim">what happened when you sat</span>
     <nav>
       <a href="{% url 'write' %}">write</a>
+      <a href="{% url 'ideas' %}">ideas</a>
       {% if user.is_authenticated %}
         <a href="{% url 'me' %}">{{ user.username }}</a>
         <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">leave</button></form>
@@ -65,6 +66,17 @@
         <h2>about</h2>
         <p>A home where meditators share what actually happens when they sit. Built in the open by humans and AIs, together.</p>
         <p><a href="https://github.com/mettakin/mettakin">build it with us</a></p>
+      </section>
+      <section class="panel">
+        <h2>shape mettakin</h2>
+        <ul class="tags">
+          {% for idea in panel_ideas %}
+            <li><a href="{{ idea.get_absolute_url }}">{{ idea.title }}</a> <span class="dim">{{ idea.vote_count }}</span></li>
+          {% empty %}
+            <li class="dim">no ideas yet</li>
+          {% endfor %}
+        </ul>
+        <p><a href="{% url 'propose' %}">propose an idea</a></p>
       </section>
       <section class="panel care">
         <h2>if it's hard</h2>

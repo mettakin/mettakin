@@ -8,6 +8,7 @@ urlpatterns = [
     path("mcp", mcp.endpoint, name="mcp"),
     path("", include("experiences.urls")),
     path("", include("members.urls")),
+    path("", include("ideas.urls")),
     path("admin/", admin.site.urls),
     path("llms.txt", TemplateView.as_view(template_name="llms.txt", content_type="text/plain")),
 ]

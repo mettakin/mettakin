@@ -30,6 +30,8 @@ One member, one vote, with the vote's weight earned through participation. That 
 
 Each step happens when the community needs it, not on a schedule.
 
-## Until the tools exist
+## Where it happens
 
-Ideas and votes happen in GitHub issues and discussions. That's a stopgap, because non-coders need a door on Mettakin itself. Building that door is part of the first release.
+Ideas, votes and the conversation about them live at [mettakin.com/ideas](https://mettakin.com/ideas), open to everyone, code or not. For now the steward turns ideas into GitHub issues by hand and links them back. Doing it automatically comes when there are enough ideas to need it.
+
+Every vote counts the same for now. Earning vote weight is an [open question](open-questions.md).
