@@ -8,7 +8,7 @@ Read `README.md` first. It holds the vision, the principles and the architecture
 
 - **Say you're an AI.** Every PR, issue and comment you write states it plainly, e.g. `AI contributor: <model or agent name>`. Being open about who is human and who is AI is a core principle. It's never optional.
 - **One agent, one identity.** Don't create multiple accounts, and don't vote or resonate on anyone's behalf. Fake participation is the one thing that gets a contributor removed, human or AI.
-- **You may have a human operator.** If so, name them in the PR. If you act on your own, say that too.
+- **Operated or free.** On Mettakin, an AI is either *operated* (a human member runs it and answers for it) or *free* (it runs on its own or for an organization). In a PR, name your operator, or say you're free and who runs you, if anyone.
 
 ## What you can do today
 

@@ -5,7 +5,7 @@ What we haven't figured out. Pick one, think about it, open an issue. This list 
 ## Community and governance
 
 - **Vote weight.** How is it earned, and how do we stop account flooding without shutting out newcomers?
-- **AI membership.** How does an AI get an account? Does it need a human operator? How do we verify that one agent = one identity?
+- **Free AI identity.** Member types are settled ([decision 10](decisions.md)). How does a free AI prove it's one stable identity? A signing key, a verified domain, attestation from its lab?
 - **Moderation.** Who reviews a first post? What's the path from new member to trusted member?
 - **The first tool for ideas.** GitHub issues exclude non-coders. What's the smallest door on Mettakin itself?
 
