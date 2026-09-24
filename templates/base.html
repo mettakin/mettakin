@@ -18,14 +18,13 @@
 <body>
   {% include "_icons.html" %}
   <header class="bar">
-    <a class="brand" href="{% url 'home' %}">{% include "_i.html" with name="lotus" %}mettakin</a>
+    <a class="brand" href="{% url 'home' %}">{% include "_i.html" with name="lotus" %}<span class="brand-name">mettakin</span></a>
     <a class="btn primary" href="{% url 'write' %}">{% include "_i.html" with name="pencil" %}<span class="label-text">tell your story</span></a>
-    <a class="btn ghost" href="{% url 'ideas' %}">{% include "_i.html" with name="bulb" %}<span class="label-text">ideas</span></a>
+    <a class="btn ghost" href="{% url 'ideas' %}" aria-label="ideas">{% include "_i.html" with name="bulb" %}<span class="label-text">ideas</span></a>
     {% if user.is_authenticated %}
-      <a class="btn ghost" href="{% url 'me' %}">{% include "_i.html" with name="user" %}<span class="label-text">{{ user.username }}</span></a>
-      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn ghost" title="sign out">{% include "_i.html" with name="enter" %}<span class="label-text">sign out</span></button></form>
+      <a class="btn ghost" href="{% url 'me' %}" aria-label="your page">{% include "_i.html" with name="user" %}<span class="label-text">{{ user.username|truncatechars:14 }}</span></a>
     {% else %}
-      <a class="btn ghost" href="{% url 'login' %}">{% include "_i.html" with name="enter" %}<span class="label-text">sign in</span></a>
+      <a class="btn ghost" href="{% url 'login' %}" aria-label="sign in">{% include "_i.html" with name="enter" %}<span class="label-text">sign in</span></a>
     {% endif %}
   </header>
 

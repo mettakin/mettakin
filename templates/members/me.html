@@ -15,6 +15,12 @@
 
 {% block side %}
   <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="user" %}<strong>{{ user.username }}</strong></div>
+    <div class="panel-body">
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn">{% include "_i.html" with name="enter" %}sign out</button></form>
+    </div>
+  </section>
+  <section class="panel">
     <div class="panel-head">{% include "_i.html" with name="lock" %}<strong>your data</strong></div>
     <div class="panel-body">
       <p><a class="btn" href="{% url 'export' %}">Download everything you wrote</a></p>
