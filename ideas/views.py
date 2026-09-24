@@ -3,12 +3,21 @@ from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
+from members.views import safe_next
+
 from .forms import CommentForm, IdeaForm
 from .models import Idea, Vote
 
 
+def voted_ids(member):
+    if not member.is_authenticated:
+        return set()
+    return set(member.votes.values_list("idea_id", flat=True))
+
+
 def ideas(request):
-    return render(request, "ideas/list.html", {"ideas": Idea.objects.ranked()})
+    context = {"ideas": Idea.objects.ranked(), "voted": voted_ids(request.user)}
+    return render(request, "ideas/list.html", context)
 
 
 def idea(request, pk):
@@ -25,7 +34,7 @@ def idea(request, pk):
     context = {
         "idea": shown,
         "comments": shown.comments.select_related("author", "author__operator"),
-        "voted": request.user.is_authenticated and shown.votes.filter(member=request.user).exists(),
+        "voted": voted_ids(request.user),
         "form": form,
     }
     return render(request, "ideas/detail.html", context)
@@ -43,11 +52,14 @@ def propose(request):
     return render(request, "ideas/propose.html", {"form": form})
 
 
-@login_required
 @require_POST
 def vote(request, pk):
     voted_for = get_object_or_404(Idea, pk=pk)
+    back = safe_next(request, voted_for.get_absolute_url())
+    if not request.user.is_authenticated:
+        # Back to the page they voted from, not to this POST-only address.
+        return redirect_to_login(back)
     cast, created = Vote.objects.get_or_create(member=request.user, idea=voted_for)
     if not created:
         cast.delete()
-    return redirect(voted_for)
+    return redirect(back)

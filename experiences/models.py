@@ -63,6 +63,16 @@ class ExperienceQuerySet(models.QuerySet):
             visible = visible.filter(visibility=Experience.Visibility.PUBLIC)
         return visible.select_related("author", "author__operator", "practice")
 
+    def listed(self, member):
+        """Visible experiences with me-too and answer counts. Only visible answers count."""
+        answers = models.Q(responses__author__consent_version=CONSENT_VERSION)
+        if not member.is_authenticated:
+            answers &= models.Q(responses__visibility=Experience.Visibility.PUBLIC)
+        return self.visible_to(member).annotate(
+            resonance_count=models.Count("resonances", distinct=True),
+            answer_count=models.Count("responses", filter=answers, distinct=True),
+        )
+
 
 class Experience(models.Model):
     class Visibility(models.TextChoices):

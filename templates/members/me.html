@@ -1,31 +1,36 @@
 {% extends "base.html" %}
 
 {% block title %}{{ user.username }} · Mettakin{% endblock %}
-{% block panel %}{{ user.username }}{% endblock %}
 
-{% block content %}
-  <h2 class="sub">your experiences</h2>
-  {% for experience in user.experiences.all %}
-    {% include "experiences/_item.html" %}
-  {% empty %}
-    <p class="dim">None yet. <a href="{% url 'write' %}">Write one.</a></p>
-  {% endfor %}
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="user" %}<strong>your experiences</strong></div>
+    {% for experience in user.experiences.all %}
+      {% include "experiences/_row.html" %}
+    {% empty %}
+      <p class="empty">None yet. <a href="{% url 'write' %}">Write one.</a></p>
+    {% endfor %}
+  </section>
+{% endblock %}
 
-  <h2 class="sub">your data</h2>
-  <p><a href="{% url 'export' %}">Download everything you wrote</a></p>
-
-  {% if user.has_consent %}
-    <form method="post" action="{% url 'withdraw_consent' %}">
-      {% csrf_token %}
-      <button class="quiet">withdraw consent and hide my experiences</button>
-    </form>
-  {% else %}
-    <p>Your experiences are hidden. <a href="{% url 'consent' %}?next={% url 'me' %}">Give consent again</a> to show them.</p>
-  {% endif %}
-
-  <form method="post" action="{% url 'delete' %}">
-    {% csrf_token %}
-    <label><input type="checkbox" required> Delete my account and everything I wrote. This can't be undone.</label>
-    <button class="quiet">delete</button>
-  </form>
+{% block side %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="lock" %}<strong>your data</strong></div>
+    <div class="panel-body">
+      <p><a class="btn" href="{% url 'export' %}">Download everything you wrote</a></p>
+      {% if user.has_consent %}
+        <form method="post" action="{% url 'withdraw_consent' %}">
+          {% csrf_token %}
+          <p><button class="btn">withdraw consent and hide my experiences</button></p>
+        </form>
+      {% else %}
+        <p>Your experiences are hidden. <a href="{% url 'consent' %}?next={% url 'me' %}">Give consent again</a> to show them.</p>
+      {% endif %}
+      <form method="post" action="{% url 'delete' %}" class="form">
+        {% csrf_token %}
+        <div><label><input type="checkbox" required> Delete my account and everything I wrote. This can't be undone.</label></div>
+        <button class="btn">delete</button>
+      </form>
+    </div>
+  </section>
 {% endblock %}

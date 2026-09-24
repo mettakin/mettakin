@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Propose an idea · Mettakin{% endblock %}
-{% block panel %}propose an idea{% endblock %}
+{% block title %}Suggest an idea · Mettakin{% endblock %}
 
-{% block content %}
-  <p>A feature, a change of direction, a problem you see. Anything that would make Mettakin more of a home.</p>
-  <form method="post" class="form">
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button>propose</button>
-  </form>
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="bulb" %}<strong>suggest an idea</strong></div>
+    <div class="panel-body">
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <button class="btn primary big">{% include "_i.html" with name="spark" %}suggest</button>
+      </form>
+    </div>
+  </section>
+{% endblock %}
+
+{% block side %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="help" %}<strong>anything goes</strong></div>
+    <div class="panel-body"><p class="dim">Something to add, change or fix. Anything that would make Mettakin feel more like home.</p></div>
+  </section>
 {% endblock %}

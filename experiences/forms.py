@@ -8,6 +8,12 @@ MAX_PHENOMENA = 10
 
 
 class ExperienceForm(PlainLabels, forms.ModelForm):
+    # Declared here so there's no blank "select an option" choice: nothing is picked for you.
+    visibility = forms.ChoiceField(
+        label="Who can read it?",
+        choices=Experience.Visibility.choices,
+        widget=forms.RadioSelect,
+    )
     practice_name = forms.CharField(
         label="What were you practicing?",
         required=False,
@@ -23,12 +29,7 @@ class ExperienceForm(PlainLabels, forms.ModelForm):
     class Meta:
         model = Experience
         fields = ["title", "body", "visibility"]
-        labels = {
-            "title": "Give it a title",
-            "body": "What happened?",
-            "visibility": "Who can read it?",
-        }
-        widgets = {"visibility": forms.RadioSelect}
+        labels = {"title": "Give it a title", "body": "What happened?"}
 
     def clean_phenomena_names(self):
         names = [n.strip() for n in self.cleaned_data["phenomena_names"].split(",") if n.strip()]

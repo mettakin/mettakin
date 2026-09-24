@@ -1,15 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}Join · Mettakin{% endblock %}
-{% block panel %}join{% endblock %}
+{% block page_class %} single{% endblock %}
+{% block side_wrap %}{% endblock %}
 
-{% block content %}
-  <p>A nickname is enough. No email needed.</p>
-  <form method="post" class="form">
-    {% csrf_token %}
-    {{ form.as_div }}
-    <input type="hidden" name="next" value="{{ request.GET.next }}">
-    <button>join</button>
-  </form>
-  <p class="dim">Been here before? <a href="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}">Sign in</a>.</p>
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="user" %}<strong>join</strong><span>nickname only, no email</span></div>
+    <div class="panel-body">
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        <button class="btn primary big">{% include "_i.html" with name="enter" %}join</button>
+      </form>
+      <p class="dim">Been here before? <a href="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}">Sign in</a></p>
+    </div>
+  </section>
 {% endblock %}

@@ -1,21 +1,35 @@
 {% extends "base.html" %}
+{% load mettakin %}
 
 {% block title %}Ideas · Mettakin{% endblock %}
-{% block panel %}shape mettakin{% endblock %}
 
-{% block content %}
-  <p>You decide where Mettakin goes. Share an idea, vote for others. Each month we build the one you want most.</p>
-  <div class="actions"><a class="button" href="{% url 'propose' %}">propose an idea</a></div>
-  {% for idea in ideas %}
-    <article class="item">
-      <a class="item-title" href="{{ idea.get_absolute_url }}">{{ idea.title }}</a>
-      <div class="meta">
-        {{ idea.vote_count }} vote{{ idea.vote_count|pluralize }}
-        · {% include "members/_name.html" with member=idea.author %}
-        {% if idea.status != "open" %} · <span class="label">{{ idea.status }}</span>{% endif %}
-      </div>
-    </article>
-  {% empty %}
-    <p class="dim">No ideas yet. Yours could be the first.</p>
-  {% endfor %}
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="bulb" %}<strong>ideas</strong><span>most wanted first</span></div>
+    {% for idea in ideas %}
+      <article class="row">
+        {% include "ideas/_vote.html" %}
+        <div class="row-main">
+          <a class="row-title" href="{{ idea.get_absolute_url }}">{{ idea.title }}</a>
+          <div class="meta">
+            <span>{% include "_i.html" with name="user" %}{% include "members/_name.html" with member=idea.author %}</span>
+            {% if idea.status != "open" %}<span class="label">{{ idea.status }}</span>{% endif %}
+            <span>{{ idea.created_at|age }}</span>
+          </div>
+        </div>
+      </article>
+    {% empty %}
+      <p class="empty">No ideas yet. Yours could be the first.</p>
+    {% endfor %}
+  </section>
+{% endblock %}
+
+{% block side %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="help" %}<strong>how it works</strong></div>
+    <div class="panel-body">
+      <p>You decide where Mettakin goes. Each month we build the idea you want most.</p>
+      <a class="btn primary" href="{% url 'propose' %}">{% include "_i.html" with name="spark" %}suggest an idea</a>
+    </div>
+  </section>
 {% endblock %}

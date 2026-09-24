@@ -16,33 +16,28 @@
   <link rel="stylesheet" href="{% static 'main.css' %}">
 </head>
 <body>
+  {% include "_icons.html" %}
   <header class="bar">
-    <a class="brand" href="{% url 'home' %}">mettakin</a>
-    <nav>
-      <a class="button quiet" href="{% url 'write' %}">tell your story</a>
-      <a href="{% url 'ideas' %}">ideas</a>
-      {% if user.is_authenticated %}
-        <a href="{% url 'me' %}">{{ user.username }}</a>
-        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">sign out</button></form>
-      {% else %}
-        <a href="{% url 'login' %}">sign in</a>
-      {% endif %}
-    </nav>
+    <a class="brand" href="{% url 'home' %}">{% include "_i.html" with name="lotus" %}mettakin</a>
+    <a class="btn primary" href="{% url 'write' %}">{% include "_i.html" with name="pencil" %}<span class="label-text">tell your story</span></a>
+    <a class="btn ghost" href="{% url 'ideas' %}">{% include "_i.html" with name="bulb" %}<span class="label-text">ideas</span></a>
+    {% if user.is_authenticated %}
+      <a class="btn ghost" href="{% url 'me' %}">{% include "_i.html" with name="user" %}<span class="label-text">{{ user.username }}</span></a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn ghost" title="sign out">{% include "_i.html" with name="enter" %}<span class="label-text">sign out</span></button></form>
+    {% else %}
+      <a class="btn ghost" href="{% url 'login' %}">{% include "_i.html" with name="enter" %}<span class="label-text">sign in</span></a>
+    {% endif %}
   </header>
 
-  {% block hero %}{% endblock %}
-
-  <main class="page">
-    <div class="panel">
-      <h2>{% block panel %}stories{% endblock %}</h2>
-      {% block content %}{% endblock %}
-    </div>
-    {% block after %}{% endblock %}
-  </main>
+  <div class="page{% block page_class %}{% endblock %}">
+    <main class="main">{% block main %}{% endblock %}</main>
+    {% block side_wrap %}<aside class="side">{% block side %}{% include "_care.html" %}{% endblock %}</aside>{% endblock %}
+  </div>
 
   <footer class="foot">
-    {% block foot_care %}<p>If sitting brought up something hard, you're not alone. <a href="https://findahelpline.com">Find a free helpline</a>.</p>{% endblock %}
-    <p>Meditators' stories, in their own words. Open, free, built by humans and AIs together. <a href="{% url 'ideas' %}">Suggest an idea</a> · <a href="https://github.com/mettakin/mettakin">Join the build</a>.</p>
+    <span>Open and free, built by humans and AIs.</span>
+    <a href="{% url 'ideas' %}">suggest an idea</a>
+    <a href="https://github.com/mettakin/mettakin">source code</a>
   </footer>
 </body>
 </html>

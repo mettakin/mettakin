@@ -1,37 +1,38 @@
 {% extends "base.html" %}
 
-{% block hero %}
+{% block main %}
   {% if not user.is_authenticated %}
-    <section class="hero">
-      <h1>You sat, something happened and now you have someone to tell.</h1>
-      <p>Read what others experienced in practice. If it happened to you too, say so, and share your own.</p>
+    <section class="panel">
+      <div class="intro">
+        <p>Meditators share what happened when they sat. Read, say <strong>me too</strong>, tell yours.</p>
+        <a class="btn primary big" href="{% url 'write' %}">{% include "_i.html" with name="pencil" %}tell your story</a>
+      </div>
+      <details class="how">
+        <summary>{% include "_i.html" with name="help" %}how it works</summary>
+        <ol>
+          <li>Read what others experienced in practice.</li>
+          <li>Happened to you too? Tap me too.</li>
+          <li>Tell your own. You choose who reads it.</li>
+          <li>A nickname is enough. No email.</li>
+        </ol>
+      </details>
     </section>
   {% endif %}
+
+  <section class="panel">
+    <div class="panel-head">
+      <strong>stories</strong>
+      <nav class="tabs">
+        <a href="{% url 'home' %}"{% if not top %} class="on"{% endif %}>{% include "_i.html" with name="spark" %}new</a>
+        <a href="{% url 'home' %}?sort=top"{% if top %} class="on"{% endif %}>{% include "_i.html" with name="heart" %}most me too</a>
+      </nav>
+    </div>
+    {% for experience in experiences %}
+      {% include "experiences/_row.html" %}
+    {% empty %}
+      <p class="empty">Oh gosh, are you the first here? <a href="{% url 'write' %}">Well, write something then!</a></p>
+    {% endfor %}
+  </section>
 {% endblock %}
 
-{% block content %}
-  {% for experience in experiences %}
-    {% include "experiences/_item.html" %}
-  {% empty %}
-    <p>Oh gosh, are you the first here?</p>
-    <p><a href="{% url 'write' %}">Well, write something then!</a></p>
-  {% endfor %}
-{% endblock %}
-
-{% block after %}
-  {% if experiences %}
-    <section class="invite">
-      <p>{% if experiences|length < 10 %}Stories are just beginning here. Yours could be one of the first.{% else %}Something similar happened to you?{% endif %}</p>
-      <a class="button big" href="{% url 'write' %}">tell your story</a>
-    </section>
-  {% endif %}
-  <details class="how">
-    <summary>How it works</summary>
-    <ul>
-      <li>Read what other meditators experienced in practice.</li>
-      <li>If it happened to you too, tap "me too". The author will know they're not alone.</li>
-      <li>Tell your own story. You choose who can read it: everyone, or only Mettakin members.</li>
-      <li>A nickname is enough. No email, no real name.</li>
-    </ul>
-  </details>
-{% endblock %}
+{% block side %}{% include "experiences/_browse.html" %}{% endblock %}

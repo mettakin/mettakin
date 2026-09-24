@@ -1,0 +1,14 @@
+{% load mettakin %}<article class="row">
+  <div class="row-main">
+    <a class="row-title" href="{{ experience.get_absolute_url }}">{{ experience.title }}</a>
+    <p class="row-excerpt">{{ experience.body|truncatechars:160 }}</p>
+    <div class="meta">
+      <span>{% include "_i.html" with name="user" %}{% include "members/_name.html" with member=experience.author %}</span>
+      {% if experience.practice %}<span>{{ experience.practice }}</span>{% endif %}
+      {% if experience.resonance_count %}<span>{% include "_i.html" with name="heart" %}{{ experience.resonance_count }}</span>{% endif %}
+      {% if experience.answer_count %}<span>{% include "_i.html" with name="chat" %}{{ experience.answer_count }}</span>{% endif %}
+      {% if experience.visibility == "community" %}<span title="only members can read it">{% include "_i.html" with name="lock" %}members</span>{% endif %}
+      <span>{{ experience.created_at|age }}</span>
+    </div>
+  </div>
+</article>

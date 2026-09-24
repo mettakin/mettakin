@@ -1,23 +1,33 @@
 {% extends "base.html" %}
 
 {% block title %}{% if editing %}Edit{% else %}Tell your story{% endif %} · Mettakin{% endblock %}
-{% block panel %}{% if editing %}edit your story{% else %}tell your story{% endif %}{% endblock %}
 
-{% block content %}
-  {% if parent %}
-    <p class="meta">answering <a href="{{ parent.get_absolute_url }}">{{ parent.title }}</a></p>
-  {% endif %}
-  <form method="post" class="form">
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button class="big">{% if editing %}save{% else %}share{% endif %}</button>
-  </form>
-  {% if not user.is_authenticated %}
-    <p class="meta">When you share, you'll pick a nickname so you can come back to your story. No email needed.</p>
-  {% endif %}
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="pencil" %}<strong>{% if editing %}edit your story{% else %}tell your story{% endif %}</strong></div>
+    <div class="panel-body">
+      {% if parent %}
+        <p class="meta"><span>{% include "_i.html" with name="chat" %}answering <a href="{{ parent.get_absolute_url }}">{{ parent.title }}</a></span></p>
+      {% endif %}
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <button class="btn primary big">{% include "_i.html" with name="spark" %}{% if editing %}save{% else %}share{% endif %}</button>
+      </form>
+    </div>
+  </section>
 {% endblock %}
 
-{% block foot_care %}{% endblock %}
-{% block after %}
+{% block side %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="help" %}<strong>tips</strong></div>
+    <div class="panel-body">
+      <ul class="tips">
+        <li>Write it as it happened. No need to explain it.</li>
+        <li>Short is fine. A few lines are enough.</li>
+        {% if not user.is_authenticated %}<li>When you share, you pick a nickname. No email.</li>{% endif %}
+      </ul>
+    </div>
+  </section>
   {% include "_care.html" %}
 {% endblock %}

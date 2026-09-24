@@ -104,6 +104,7 @@ class WriteTests(TestCase):
         self.assertEqual(self.client.get(reverse("write")).status_code, 200)
 
     def test_visibility_must_be_chosen(self):
+        self.assertNotContains(self.client.get(reverse("write")), "checked")
         self.client.force_login(member())
         response = self.post(visibility="")
         self.assertEqual(response.status_code, 200)

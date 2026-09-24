@@ -1,0 +1,5 @@
+<form class="vote" method="post" action="{% url 'vote' idea.pk %}">
+  {% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.path }}">
+  <button class="btn{% if idea.pk in voted %} heart on{% endif %}" title="I want this">{% include "_i.html" with name="up" %}{{ idea.vote_count }}</button>
+</form>

@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 
 {% block title %}{{ tag }} in meditation · Mettakin{% endblock %}
-{% block panel %}{{ tag }}{% endblock %}
 
-{% block content %}
-  <p class="dim">{{ experiences|length }} experience{{ experiences|length|pluralize }} of {{ tag }}</p>
-  {% for experience in experiences %}
-    {% include "experiences/_item.html" %}
-  {% endfor %}
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">
+      <a class="crumb" href="{% url 'home' %}">{% include "_i.html" with name="back" %}stories</a>
+      <strong>{{ tag }}</strong>
+      <span>{{ experiences|length }} stor{{ experiences|length|pluralize:"y,ies" }}</span>
+    </div>
+    {% for experience in experiences %}
+      {% include "experiences/_row.html" %}
+    {% endfor %}
+  </section>
 {% endblock %}
+
+{% block side %}{% include "experiences/_browse.html" %}{% endblock %}

@@ -29,6 +29,14 @@ class IdeaTests(TestCase):
         self.client.post(url)
         self.assertEqual(shown.votes.count(), 0)
 
+    def test_voting_from_the_list_comes_back_to_the_list(self):
+        shown = Idea.objects.create(author=member(), title="Test", body="Test.")
+        url = reverse("vote", args=[shown.pk])
+        signed_out = self.client.post(url, {"next": reverse("ideas")})
+        self.assertRedirects(signed_out, f"{reverse('login')}?next={reverse('ideas')}")
+        self.client.force_login(member("voter"))
+        self.assertRedirects(self.client.post(url, {"next": reverse("ideas")}), reverse("ideas"))
+
     def test_visitors_read_but_members_talk(self):
         shown = Idea.objects.create(author=member(), title="Test", body="Test.")
         response = self.client.post(shown.get_absolute_url(), {"body": "Test comment."})

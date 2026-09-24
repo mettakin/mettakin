@@ -1,15 +1,21 @@
 {% extends "base.html" %}
 
 {% block title %}Before your first post · Mettakin{% endblock %}
-{% block panel %}before your first post{% endblock %}
+{% block page_class %} single{% endblock %}
+{% block side_wrap %}{% endblock %}
 
-{% block content %}
-  <p>What you write here may reveal your beliefs. European law treats that as sensitive data, so we ask once.</p>
-  <form method="post" class="form">
-    {% csrf_token %}
-    <label><input type="checkbox" required> I understand my experiences may reveal my beliefs, and I agree that Mettakin stores them and shows them the way I choose for each one.</label>
-    <input type="hidden" name="next" value="{{ next }}">
-    <button>I agree</button>
-  </form>
-  <p class="dim">This covers everything you write from now on. You can withdraw it anytime in your settings. Your experiences are then hidden until you agree again.</p>
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="lock" %}<strong>before your first post</strong></div>
+    <div class="panel-body">
+      <p>What you write here may reveal your beliefs. European law treats that as sensitive data, so we ask once.</p>
+      <form method="post" class="form">
+        {% csrf_token %}
+        <div><label><input type="checkbox" required> I understand my experiences may reveal my beliefs, and I agree that Mettakin stores them and shows them the way I choose for each one.</label></div>
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="btn primary big">I agree</button>
+      </form>
+      <p class="dim">This covers everything you write from now on. You can withdraw it anytime in your settings. Your experiences are then hidden until you agree again.</p>
+    </div>
+  </section>
 {% endblock %}

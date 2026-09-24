@@ -1,20 +1,42 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views.decorators.http import require_POST
 
+from ideas.models import Idea
+
 from .forms import ExperienceForm
 from .models import Experience, Phenomenon, Practice, Resonance
 
+DRAFT = "draft"
+DRAFT_FIELDS = ["title", "body", "visibility", "practice_name", "phenomena_names"]
+
+
+def after(view_name, next_path):
+    return redirect(f"{reverse(view_name)}?{urlencode({'next': next_path})}")
+
+
+def browse(member):
+    """What the side panels of a list page show: tags to browse and the ideas people want most."""
+    visible = Experience.objects.visible_to(member)
+    return {
+        "practices": Practice.seen_in(visible)[:12],
+        "phenomena": Phenomenon.seen_in(visible)[:12],
+        "top_ideas": Idea.objects.ranked().filter(status=Idea.Status.OPEN)[:3],
+    }
+
 
 def home(request):
-    experiences = Experience.objects.visible_to(request.user).annotate(
-        resonance_count=Count("resonances")
+    top = request.GET.get("sort") == "top"
+    order = ["-resonance_count", "-created_at"] if top else ["-created_at"]
+    experiences = Experience.objects.listed(request.user).order_by(*order)[:50]
+    return render(
+        request,
+        "experiences/list.html",
+        {"experiences": experiences, "top": top} | browse(request.user),
     )
-    return render(request, "experiences/list.html", {"experiences": experiences[:50]})
 
 
 def experience(request, pk, slug):
@@ -26,19 +48,11 @@ def experience(request, pk, slug):
     )
     context = {
         "experience": shown,
-        "responses": Experience.objects.visible_to(request.user).filter(in_response_to=shown),
+        "responses": Experience.objects.listed(request.user).filter(in_response_to=shown),
         "resonance_count": shown.resonances.count(),
         "resonated": resonated,
     }
     return render(request, "experiences/detail.html", context)
-
-
-DRAFT = "draft"
-DRAFT_FIELDS = ["title", "body", "visibility", "practice_name", "phenomena_names"]
-
-
-def after(view_name, next_path):
-    return redirect(f"{reverse(view_name)}?{urlencode({'next': next_path})}")
 
 
 def write(request, respond_to=None):
@@ -87,15 +101,15 @@ def tag_page(request, tag, experiences):
     # A tag only exists for a visitor if they can see at least one experience with it.
     if not experiences:
         raise Http404
-    return render(request, "experiences/tag.html", {"tag": tag, "experiences": experiences})
+    context = {"tag": tag, "experiences": experiences} | browse(request.user)
+    return render(request, "experiences/tag.html", context)
 
 
 def practice(request, slug):
     tag = get_object_or_404(Practice, slug=slug)
-    return tag_page(request, tag, Experience.objects.visible_to(request.user).filter(practice=tag))
+    return tag_page(request, tag, Experience.objects.listed(request.user).filter(practice=tag))
 
 
 def phenomenon(request, slug):
     tag = get_object_or_404(Phenomenon, slug=slug)
-    visible = Experience.objects.visible_to(request.user)
-    return tag_page(request, tag, visible.filter(phenomena=tag))
+    return tag_page(request, tag, Experience.objects.listed(request.user).filter(phenomena=tag))

@@ -1,0 +1,27 @@
+{% if practices or phenomena %}
+  <section class="panel">
+    <div class="panel-head"><strong>browse</strong></div>
+    <div class="panel-body">
+      {% if practices %}
+        <h3>practice</h3>
+        <div class="chips">{% for tag in practices %}<a class="chip" href="{{ tag.get_absolute_url }}">{{ tag }}<span class="n">{{ tag.count }}</span></a>{% endfor %}</div>
+      {% endif %}
+      {% if phenomena %}
+        <h3>what it was like</h3>
+        <div class="chips">{% for tag in phenomena %}<a class="chip" href="{{ tag.get_absolute_url }}">{{ tag }}<span class="n">{{ tag.count }}</span></a>{% endfor %}</div>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}
+<section class="panel">
+  <div class="panel-head">{% include "_i.html" with name="bulb" %}<strong>ideas</strong><a href="{% url 'ideas' %}">all</a></div>
+  <div class="panel-body">
+    {% if top_ideas %}
+      <ul class="list">{% for idea in top_ideas %}<li><a href="{{ idea.get_absolute_url }}">{{ idea.title }}</a><span class="count">▲{{ idea.vote_count }}</span></li>{% endfor %}</ul>
+    {% else %}
+      <p class="dim">What should Mettakin do next?</p>
+    {% endif %}
+    <p><a class="btn" href="{% url 'propose' %}">{% include "_i.html" with name="spark" %}suggest an idea</a></p>
+  </div>
+</section>
+{% include "_care.html" %}

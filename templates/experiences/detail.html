@@ -1,52 +1,49 @@
 {% extends "base.html" %}
+{% load mettakin %}
 
 {% block title %}{{ experience.title }} · Mettakin{% endblock %}
 {% block description %}{{ experience.body|truncatechars:200 }}{% endblock %}
 {% block og_title %}{{ experience.title }}{% endblock %}
 {% block og_description %}{{ experience.body|truncatechars:200 }}{% endblock %}
-{% block panel %}story{% endblock %}
 
-{% block content %}
-  {% if experience.in_response_to %}
-    <p class="meta">answering <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></p>
-  {% endif %}
-
-  <h1>{{ experience.title }}</h1>
-  <p class="meta">
-    {% include "members/_name.html" with member=experience.author %}
-    · {{ experience.created_at|date:"j M Y" }}
-    {% if experience.practice %} · <a href="{{ experience.practice.get_absolute_url }}">{{ experience.practice }}</a>{% endif %}
-    {% if experience.author == user %} · <a href="{% url 'edit' experience.pk %}">edit</a>{% endif %}
-  </p>
-
-  <div class="body">{{ experience.body|linebreaks }}</div>
-
-  {% if experience.phenomena.exists %}
-    <p>{% for tag in experience.phenomena.all %}<a class="label" href="{{ tag.get_absolute_url }}">{{ tag }}</a> {% endfor %}</p>
-  {% endif %}
-
-  <div class="respond">
-    <p>Did something like this happen to you?</p>
-    <div class="actions">
+{% block main %}
+  <article class="panel">
+    <div class="story">
+      <a class="crumb" href="{% url 'home' %}">{% include "_i.html" with name="back" %}stories</a>
+      {% if experience.in_response_to %}
+        <p class="meta"><span>{% include "_i.html" with name="chat" %}answering <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></span></p>
+      {% endif %}
+      <h1>{{ experience.title }}</h1>
+      <div class="meta">
+        <span>{% include "_i.html" with name="user" %}{% include "members/_name.html" with member=experience.author %}</span>
+        <span>{{ experience.created_at|age }} ago</span>
+        {% if experience.visibility == "community" %}<span>{% include "_i.html" with name="lock" %}members only</span>{% endif %}
+        {% if experience.author == user %}<a href="{% url 'edit' experience.pk %}">{% include "_i.html" with name="pencil" %}edit</a>{% endif %}
+      </div>
+      <div class="body">{{ experience.body|linebreaks }}</div>
+      {% if experience.practice or experience.phenomena.exists %}
+        <div class="chips">
+          {% if experience.practice %}<a class="chip" href="{{ experience.practice.get_absolute_url }}">{{ experience.practice }}</a>{% endif %}
+          {% for tag in experience.phenomena.all %}<a class="chip" href="{{ tag.get_absolute_url }}">{{ tag }}</a>{% endfor %}
+        </div>
+      {% endif %}
+    </div>
+    <div class="toolbar">
       <form method="post" action="{% url 'resonate' experience.pk %}">
         {% csrf_token %}
-        <button class="big{% if resonated %} on{% endif %}">me too{% if resonance_count %} · {{ resonance_count }}{% endif %}</button>
+        <button class="btn heart big{% if resonated %} on{% endif %}">{% include "_i.html" with name="heart" %}me too{% if resonance_count %} · {{ resonance_count }}{% endif %}</button>
       </form>
-      <a class="mono" href="{% url 'respond' experience.pk %}">share yours</a>
+      <a class="btn big" href="{% url 'respond' experience.pk %}">{% include "_i.html" with name="pencil" %}tell yours</a>
+      {% if not user.is_authenticated %}<span class="hint">nickname only, no email</span>{% endif %}
     </div>
-    {% if not user.is_authenticated %}<p class="meta">A nickname is enough, no email.</p>{% endif %}
-  </div>
+  </article>
 
   {% if responses %}
-    <h2 class="sub">answers</h2>
-    {% for experience in responses %}
-      {% include "experiences/_item.html" %}
-    {% endfor %}
+    <section class="panel">
+      <div class="panel-head">{% include "_i.html" with name="chat" %}<strong>answers</strong><span>{{ responses|length }}</span></div>
+      {% for experience in responses %}
+        {% include "experiences/_row.html" %}
+      {% endfor %}
+    </section>
   {% endif %}
-{% endblock %}
-
-{% block foot_care %}{% endblock %}
-{% block after %}
-  {% include "_care.html" %}
-  <p class="mono"><a href="{% url 'home' %}">more stories</a></p>
 {% endblock %}

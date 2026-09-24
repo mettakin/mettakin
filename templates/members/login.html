@@ -1,14 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}Sign in · Mettakin{% endblock %}
-{% block panel %}sign in{% endblock %}
+{% block page_class %} single{% endblock %}
+{% block side_wrap %}{% endblock %}
 
-{% block content %}
-  <form method="post" class="form">
-    {% csrf_token %}
-    {{ form.as_div }}
-    <input type="hidden" name="next" value="{{ next }}">
-    <button>sign in</button>
-  </form>
-  <p class="dim">New here? <a href="{% url 'join' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Join</a>.</p>
+{% block main %}
+  <section class="panel">
+    <div class="panel-head">{% include "_i.html" with name="enter" %}<strong>sign in</strong></div>
+    <div class="panel-body">
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="btn primary big">{% include "_i.html" with name="enter" %}sign in</button>
+      </form>
+      <p class="dim">New here? <a href="{% url 'join' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Join</a></p>
+    </div>
+  </section>
 {% endblock %}
