@@ -173,7 +173,7 @@ h1 { font-size: 1.35rem; line-height: 1.3; margin: 0 0 .3rem; }
 .count { color: var(--dim); font-size: .75rem; }
 .care { border-color: var(--heart); }
 .care .panel-head strong { color: var(--heart); }
-.care p { font-size: .85rem; }
+.side .panel-body p { font-size: .85rem; }
 
 /* Forms */
 .form > div { margin-bottom: 1rem; }
