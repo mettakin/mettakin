@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Mettakin{% endblock %}</title>
-  <meta name="description" content="{% block description %}Meditators' stories, in their own words. Read what others experienced in practice, say "me too", and share your own.{% endblock %}">
+  <meta name="description" content="{% block description %}Meditators' stories, in their own words. Read what others experienced in practice, say &quot;me too&quot;, and share your own.{% endblock %}">
   <meta property="og:site_name" content="Mettakin">
   <meta property="og:title" content="{% block og_title %}Meditation, tell your story{% endblock %}">
   <meta property="og:description" content="{% block og_description %}Meditators' stories, in their own words. Open, free, built by humans and AIs together.{% endblock %}">
@@ -18,7 +18,6 @@
 <body>
   <header class="bar">
     <a class="brand" href="{% url 'home' %}">mettakin</a>
-    <span class="dim tagline">meditation, tell your story</span>
     <nav>
       <a class="button quiet" href="{% url 'write' %}">tell your story</a>
       <a href="{% url 'ideas' %}">ideas</a>
@@ -26,7 +25,6 @@
         <a href="{% url 'me' %}">{{ user.username }}</a>
         <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">sign out</button></form>
       {% else %}
-        <a href="{% url 'join' %}">join</a>
         <a href="{% url 'login' %}">sign in</a>
       {% endif %}
     </nav>
@@ -34,55 +32,17 @@
 
   {% block hero %}{% endblock %}
 
-  <div class="screen">
-    <main class="panel">
+  <main class="page">
+    <div class="panel">
       <h2>{% block panel %}stories{% endblock %}</h2>
       {% block content %}{% endblock %}
-    </main>
-
-    <aside class="side">
-      {% if panel_practices %}
-        <section class="panel">
-          <h2>practices</h2>
-          <ul class="tags">
-            {% for tag in panel_practices %}
-              <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
-            {% endfor %}
-          </ul>
-        </section>
-      {% endif %}
-      {% if panel_phenomena %}
-        <section class="panel">
-          <h2>phenomena</h2>
-          <ul class="tags">
-            {% for tag in panel_phenomena %}
-              <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
-            {% endfor %}
-          </ul>
-        </section>
-      {% endif %}
-      <section class="panel">
-        <h2>shape mettakin</h2>
-        <ul class="tags">
-          {% for idea in panel_ideas %}
-            <li><a href="{{ idea.get_absolute_url }}">{{ idea.title }}</a> <span class="dim">{{ idea.vote_count }}</span></li>
-          {% empty %}
-            <li class="dim">no ideas yet</li>
-          {% endfor %}
-        </ul>
-        <p><a href="{% url 'propose' %}">propose an idea</a></p>
-      </section>
-      <section class="panel care">
-        <h2>if it's hard</h2>
-        <p>Sometimes sitting opens things that hurt. That happens, and you're not alone.</p>
-        <p>If you need someone now, <a href="https://findahelpline.com">find a free helpline</a> near you.</p>
-      </section>
-    </aside>
-  </div>
+    </div>
+    {% block after %}{% endblock %}
+  </main>
 
   <footer class="foot">
-    Meditators' stories, in their own words. Open, free, built by humans and AIs together.
-    <a href="https://github.com/mettakin/mettakin">Join the build</a>.
+    {% block foot_care %}<p>If sitting brought up something hard, you're not alone. <a href="https://findahelpline.com">Find a free helpline</a>.</p>{% endblock %}
+    <p>Meditators' stories, in their own words. Open, free, built by humans and AIs together. <a href="{% url 'ideas' %}">Suggest an idea</a> · <a href="https://github.com/mettakin/mettakin">Join the build</a>.</p>
   </footer>
 </body>
 </html>

@@ -16,6 +16,7 @@
     {% include "members/_name.html" with member=experience.author %}
     · {{ experience.created_at|date:"j M Y" }}
     {% if experience.practice %} · <a href="{{ experience.practice.get_absolute_url }}">{{ experience.practice }}</a>{% endif %}
+    {% if experience.author == user %} · <a href="{% url 'edit' experience.pk %}">edit</a>{% endif %}
   </p>
 
   <div class="body">{{ experience.body|linebreaks }}</div>
@@ -24,12 +25,16 @@
     <p>{% for tag in experience.phenomena.all %}<a class="label" href="{{ tag.get_absolute_url }}">{{ tag }}</a> {% endfor %}</p>
   {% endif %}
 
-  <div class="actions">
-    <form method="post" action="{% url 'resonate' experience.pk %}">
-      {% csrf_token %}
-      <button class="big{% if resonated %} on{% endif %}">me too · {{ resonance_count }}</button>
-    </form>
-    <a class="mono" href="{% url 'respond' experience.pk %}">share yours</a>
+  <div class="respond">
+    <p>Did something like this happen to you?</p>
+    <div class="actions">
+      <form method="post" action="{% url 'resonate' experience.pk %}">
+        {% csrf_token %}
+        <button class="big{% if resonated %} on{% endif %}">me too{% if resonance_count %} · {{ resonance_count }}{% endif %}</button>
+      </form>
+      <a class="mono" href="{% url 'respond' experience.pk %}">share yours</a>
+    </div>
+    {% if not user.is_authenticated %}<p class="meta">A nickname is enough, no email.</p>{% endif %}
   </div>
 
   {% if responses %}
@@ -38,4 +43,10 @@
       {% include "experiences/_item.html" %}
     {% endfor %}
   {% endif %}
+{% endblock %}
+
+{% block foot_care %}{% endblock %}
+{% block after %}
+  {% include "_care.html" %}
+  <p class="mono"><a href="{% url 'home' %}">more stories</a></p>
 {% endblock %}

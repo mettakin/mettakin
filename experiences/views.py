@@ -33,24 +33,50 @@ def experience(request, pk, slug):
     return render(request, "experiences/detail.html", context)
 
 
-# Most signed-out people who want to write are new, so they land on join, which links to sign in.
-@login_required(login_url="join")
+DRAFT = "draft"
+DRAFT_FIELDS = ["title", "body", "visibility", "practice_name", "phenomena_names"]
+
+
+def after(view_name, next_path):
+    return redirect(f"{reverse(view_name)}?{urlencode({'next': next_path})}")
+
+
 def write(request, respond_to=None):
-    if not request.user.has_consent:
-        return redirect(f"{reverse('consent')}?{urlencode({'next': request.path})}")
+    """Anyone can start writing. A signed-out writer's draft waits in the session as they join."""
+    if request.user.is_authenticated and not request.user.has_consent:
+        return after("consent", request.path)
     parent = None
     if respond_to:
         parent = get_object_or_404(Experience.objects.visible_to(request.user), pk=respond_to)
-    form = ExperienceForm(request.POST or None)
+    draft = request.session.get(DRAFT) if request.method == "GET" else None
+    form = ExperienceForm(request.POST or None, initial=draft)
     if form.is_valid():
+        if not request.user.is_authenticated:
+            request.session[DRAFT] = {field: request.POST.get(field, "") for field in DRAFT_FIELDS}
+            return after("join", request.path)
+        request.session.pop(DRAFT, None)
         return redirect(form.save(author=request.user, in_response_to=parent))
     return render(request, "experiences/write.html", {"form": form, "parent": parent})
 
 
 @login_required
+def edit(request, pk):
+    mine = get_object_or_404(Experience, pk=pk, author=request.user)
+    tags = {
+        "practice_name": mine.practice.name if mine.practice else "",
+        "phenomena_names": ", ".join(p.name for p in mine.phenomena.all()),
+    }
+    form = ExperienceForm(request.POST or None, instance=mine, initial=tags)
+    if form.is_valid():
+        return redirect(form.save(author=request.user, in_response_to=mine.in_response_to))
+    return render(request, "experiences/write.html", {"form": form, "editing": mine})
+
+
 @require_POST
 def resonate(request, pk):
     shown = get_object_or_404(Experience.objects.visible_to(request.user), pk=pk)
+    if not request.user.is_authenticated:
+        return after("join", shown.get_absolute_url())
     resonance, created = Resonance.objects.get_or_create(member=request.user, experience=shown)
     if not created:
         resonance.delete()

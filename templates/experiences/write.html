@@ -1,15 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}Write · Mettakin{% endblock %}
-{% block panel %}write{% endblock %}
+{% block title %}{% if editing %}Edit{% else %}Tell your story{% endif %} · Mettakin{% endblock %}
+{% block panel %}{% if editing %}edit your story{% else %}tell your story{% endif %}{% endblock %}
 
 {% block content %}
   {% if parent %}
-    <p class="dim">answering <a href="{{ parent.get_absolute_url }}">{{ parent.title }}</a></p>
+    <p class="meta">answering <a href="{{ parent.get_absolute_url }}">{{ parent.title }}</a></p>
   {% endif %}
   <form method="post" class="form">
     {% csrf_token %}
     {{ form.as_div }}
-    <button>share</button>
+    <button class="big">{% if editing %}save{% else %}share{% endif %}</button>
   </form>
+  {% if not user.is_authenticated %}
+    <p class="meta">When you share, you'll pick a nickname so you can come back to your story. No email needed.</p>
+  {% endif %}
+{% endblock %}
+
+{% block foot_care %}{% endblock %}
+{% block after %}
+  {% include "_care.html" %}
 {% endblock %}

@@ -57,9 +57,44 @@ class WriteTests(TestCase):
         data = {"title": "Test title", "body": "Test body.", "visibility": "public"} | fields
         return self.client.post(reverse("write"), data)
 
-    def test_visitors_are_asked_to_join(self):
-        response = self.client.get(reverse("write"))
-        self.assertRedirects(response, f"{reverse('join')}?next={reverse('write')}")
+    def test_visitors_write_first_and_join_after(self):
+        self.assertEqual(self.client.get(reverse("write")).status_code, 200)
+        response = self.post(title="Test draft")
+        self.assertRedirects(response, f"{reverse('join')}?next=%2Fwrite%2F")
+        self.assertFalse(Experience.objects.exists())
+        self.client.force_login(member())
+        self.assertContains(self.client.get(reverse("write")), 'value="Test draft"')
+        self.post(title="Test draft")
+        self.assertEqual(Experience.objects.get().title, "Test draft")
+        self.assertNotIn("draft", self.client.session)
+
+    def test_only_the_author_can_edit(self):
+        author = member()
+        mine = experience(author)
+        mine.phenomena.set([Phenomenon.named("dosbelief")])
+        self.client.force_login(member("someone-else"))
+        self.assertEqual(self.client.get(reverse("edit", args=[mine.pk])).status_code, 404)
+        self.client.force_login(author)
+        self.assertContains(self.client.get(reverse("edit", args=[mine.pk])), "dosbelief")
+        self.client.post(
+            reverse("edit", args=[mine.pk]),
+            {
+                "title": "Test fixed",
+                "body": "Test.",
+                "visibility": "public",
+                "phenomena_names": "disbelief",
+            },
+        )
+        mine.refresh_from_db()
+        self.assertEqual(mine.title, "Test fixed")
+        self.assertEqual([p.slug for p in mine.phenomena.all()], ["disbelief"])
+
+    def test_visitor_saying_me_too_is_asked_to_join_and_comes_back(self):
+        shown = experience(member())
+        response = self.client.post(reverse("resonate", args=[shown.pk]))
+        self.assertEqual(
+            response.url, f"{reverse('join')}?next={shown.get_absolute_url().replace('/', '%2F')}"
+        )
 
     def test_first_post_asks_for_consent_once(self):
         self.client.force_login(member(consent=False))
