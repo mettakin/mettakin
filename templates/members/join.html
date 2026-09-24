@@ -4,7 +4,7 @@
 {% block panel %}join{% endblock %}
 
 {% block content %}
-  <p>A pseudonym is enough. No email needed.</p>
+  <p>A nickname is enough. No email needed.</p>
   <form method="post" class="form">
     {% csrf_token %}
     {{ form.as_div }}

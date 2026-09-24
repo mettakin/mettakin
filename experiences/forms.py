@@ -7,10 +7,10 @@ MAX_PHENOMENA = 10
 
 class ExperienceForm(forms.ModelForm):
     practice_name = forms.CharField(
-        label="Practice",
+        label="What were you practicing?",
         required=False,
         max_length=Tag.MAX_LENGTH,
-        help_text="Vipassana, zazen, metta, just sitting...",
+        help_text="Vipassana, zazen, metta, yoga nidra, just sitting...",
     )
     phenomena_names = forms.CharField(
         label="What was it like?",
@@ -21,7 +21,11 @@ class ExperienceForm(forms.ModelForm):
     class Meta:
         model = Experience
         fields = ["title", "body", "visibility"]
-        labels = {"title": "In one line", "body": "What happened?"}
+        labels = {
+            "title": "Give it a title",
+            "body": "What happened?",
+            "visibility": "Who can read it?",
+        }
         widgets = {"visibility": forms.RadioSelect}
 
     def clean_phenomena_names(self):

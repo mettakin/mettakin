@@ -3,7 +3,7 @@
   <div class="dim">
     {% include "members/_name.html" with member=experience.author %}
     {% if experience.practice %} · {{ experience.practice }}{% endif %}
-    {% if experience.resonance_count %} · {{ experience.resonance_count }} resonated{% endif %}
+    {% if experience.resonance_count %} · {{ experience.resonance_count }} × me too{% endif %}
     {% if experience.visibility == "community" %} · <span class="label">community</span>{% endif %}
   </div>
 </article>

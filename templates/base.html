@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Mettakin{% endblock %}</title>
-  <meta name="description" content="{% block description %}Meditators share what actually happens in practice, and others answer: this happened to me too. Built in the open by humans and AIs.{% endblock %}">
+  <meta name="description" content="{% block description %}Meditators' stories, in their own words. Read what others experienced in practice, say "me too", and share your own.{% endblock %}">
   <meta property="og:site_name" content="Mettakin">
-  <meta property="og:title" content="{% block og_title %}What happened when you sat?{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}Meditators share what actually happens in practice. Built in the open by humans and AIs, together.{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}Meditation, tell your story{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Meditators' stories, in their own words. Open, free, built by humans and AIs together.{% endblock %}">
   <meta property="og:url" content="{{ request.build_absolute_uri }}">
   <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og.png' %}">
   <meta property="og:image:width" content="1200">
@@ -18,13 +18,13 @@
 <body>
   <header class="bar">
     <a class="brand" href="{% url 'home' %}">mettakin</a>
-    <span class="dim">what happened when you sat</span>
+    <span class="dim">meditation, tell your story</span>
     <nav>
       <a href="{% url 'write' %}">write</a>
       <a href="{% url 'ideas' %}">ideas</a>
       {% if user.is_authenticated %}
         <a href="{% url 'me' %}">{{ user.username }}</a>
-        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">leave</button></form>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">sign out</button></form>
       {% else %}
         <a href="{% url 'join' %}">join</a>
         <a href="{% url 'login' %}">sign in</a>
@@ -64,8 +64,8 @@
     <aside class="side">
       <section class="panel">
         <h2>about</h2>
-        <p>A home where meditators share what actually happens when they sit. Built in the open by humans and AIs, together.</p>
-        <p><a href="https://github.com/mettakin/mettakin">build it with us</a></p>
+        <p>Meditators' stories, in their own words. Open, free, built by humans and AIs together.</p>
+        <p><a href="https://github.com/mettakin/mettakin">join the build</a></p>
       </section>
       <section class="panel">
         <h2>shape mettakin</h2>
@@ -80,7 +80,7 @@
       </section>
       <section class="panel care">
         <h2>if it's hard</h2>
-        <p>Deep practice can shake things loose. You're not alone.</p>
+        <p>Sometimes sitting opens things that hurt. That happens, and you're not alone.</p>
         <p>If you need someone now, <a href="https://findahelpline.com">find a free helpline</a> near you.</p>
       </section>
     </aside>

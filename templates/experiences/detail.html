@@ -8,7 +8,7 @@
 
 {% block content %}
   {% if experience.in_response_to %}
-    <p class="dim">in response to <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></p>
+    <p class="dim">answering <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></p>
   {% endif %}
 
   <h1>{{ experience.title }}</h1>
@@ -27,13 +27,13 @@
   <div class="actions">
     <form method="post" action="{% url 'resonate' experience.pk %}">
       {% csrf_token %}
-      <button{% if resonated %} class="on"{% endif %}>this happened to me too · {{ resonance_count }}</button>
+      <button{% if resonated %} class="on"{% endif %}>me too · {{ resonance_count }}</button>
     </form>
-    <a href="{% url 'respond' experience.pk %}">answer with your own experience</a>
+    <a href="{% url 'respond' experience.pk %}">share yours</a>
   </div>
 
   {% if responses %}
-    <h2 class="sub">answered by</h2>
+    <h2 class="sub">answers</h2>
     {% for experience in responses %}
       {% include "experiences/_item.html" %}
     {% endfor %}

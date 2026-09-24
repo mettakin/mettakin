@@ -3,15 +3,15 @@
 {% block content %}
   {% if not user.is_authenticated %}
     <section class="welcome">
-      <p><strong>Something happened when you sat, and you've had nowhere to tell it.</strong></p>
-      <p>Here meditators write what actually happens in practice. When you read something that happened to you too, you say so.</p>
-      <p><a href="{% url 'write' %}">write what happened</a> · <a href="{% url 'ideas' %}">shape where this goes</a></p>
+      <p><strong>You sat, something happened and now you have someone to tell.</strong></p>
+      <p>Read what others experienced in practice. If it happened to you too, say so, and share your own.</p>
+      <p><a href="{% url 'write' %}">tell your story</a> · <a href="{% url 'ideas' %}">shape Mettakin</a></p>
     </section>
   {% endif %}
   {% for experience in experiences %}
     {% include "experiences/_item.html" %}
   {% empty %}
-    <p>Nothing here yet.</p>
-    <p><a href="{% url 'write' %}">Be the first: write what happened.</a></p>
+    <p>Oh gosh, are you the first here?</p>
+    <p><a href="{% url 'write' %}">Well, write something then!</a></p>
   {% endfor %}
 {% endblock %}

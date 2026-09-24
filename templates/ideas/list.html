@@ -4,7 +4,7 @@
 {% block panel %}shape mettakin{% endblock %}
 
 {% block content %}
-  <p>Mettakin goes where its members take it. Propose an idea, vote for the ones you want. Each month the top open idea gets built.</p>
+  <p>You decide where Mettakin goes. Share an idea, vote for others. Each month we build the one you want most.</p>
   <p><a href="{% url 'propose' %}">propose an idea</a></p>
   {% for idea in ideas %}
     <article class="item">

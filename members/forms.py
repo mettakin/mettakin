@@ -7,4 +7,4 @@ class JoinForm(UserCreationForm):
     class Meta:
         model = Member
         fields = ["username"]
-        labels = {"username": "Name or pseudonym"}
+        labels = {"username": "Name or nickname"}

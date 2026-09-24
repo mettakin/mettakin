@@ -8,8 +8,8 @@ class IdeaForm(forms.ModelForm):
         model = Idea
         fields = ["title", "body"]
         labels = {
-            "title": "The idea in one line",
-            "body": "Why it matters, and what it could look like",
+            "title": "Give it a title",
+            "body": "Tell us more",
         }
 
 

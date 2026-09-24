@@ -66,8 +66,8 @@ class ExperienceQuerySet(models.QuerySet):
 
 class Experience(models.Model):
     class Visibility(models.TextChoices):
-        PUBLIC = "public", "Public: open to the web and search"
-        COMMUNITY = "community", "Community: only signed-in members"
+        PUBLIC = "public", "Everyone, including search engines"
+        COMMUNITY = "community", "Only Mettakin members"
 
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="experiences"
