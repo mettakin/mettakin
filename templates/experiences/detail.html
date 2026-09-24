@@ -4,15 +4,15 @@
 {% block description %}{{ experience.body|truncatechars:200 }}{% endblock %}
 {% block og_title %}{{ experience.title }}{% endblock %}
 {% block og_description %}{{ experience.body|truncatechars:200 }}{% endblock %}
-{% block panel %}experience{% endblock %}
+{% block panel %}story{% endblock %}
 
 {% block content %}
   {% if experience.in_response_to %}
-    <p class="dim">answering <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></p>
+    <p class="meta">answering <a href="{{ experience.in_response_to.get_absolute_url }}">{{ experience.in_response_to.title }}</a></p>
   {% endif %}
 
   <h1>{{ experience.title }}</h1>
-  <p class="dim">
+  <p class="meta">
     {% include "members/_name.html" with member=experience.author %}
     · {{ experience.created_at|date:"j M Y" }}
     {% if experience.practice %} · <a href="{{ experience.practice.get_absolute_url }}">{{ experience.practice }}</a>{% endif %}
@@ -27,9 +27,9 @@
   <div class="actions">
     <form method="post" action="{% url 'resonate' experience.pk %}">
       {% csrf_token %}
-      <button{% if resonated %} class="on"{% endif %}>me too · {{ resonance_count }}</button>
+      <button class="big{% if resonated %} on{% endif %}">me too · {{ resonance_count }}</button>
     </form>
-    <a href="{% url 'respond' experience.pk %}">share yours</a>
+    <a class="mono" href="{% url 'respond' experience.pk %}">share yours</a>
   </div>
 
   {% if responses %}

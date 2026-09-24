@@ -1,6 +1,7 @@
 <article class="item">
-  <a href="{{ experience.get_absolute_url }}">{{ experience.title }}</a>
-  <div class="dim">
+  <a class="item-title" href="{{ experience.get_absolute_url }}">{{ experience.title }}</a>
+  <p>{{ experience.body|truncatewords:35 }}</p>
+  <div class="meta">
     {% include "members/_name.html" with member=experience.author %}
     {% if experience.practice %} · {{ experience.practice }}{% endif %}
     {% if experience.resonance_count %} · {{ experience.resonance_count }} × me too{% endif %}

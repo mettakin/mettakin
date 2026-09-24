@@ -1,9 +1,11 @@
 from django import forms
 
+from mettakin.forms import PlainLabels
+
 from .models import Comment, Idea
 
 
-class IdeaForm(forms.ModelForm):
+class IdeaForm(PlainLabels, forms.ModelForm):
     class Meta:
         model = Idea
         fields = ["title", "body"]
@@ -13,7 +15,7 @@ class IdeaForm(forms.ModelForm):
         }
 
 
-class CommentForm(forms.ModelForm):
+class CommentForm(PlainLabels, forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["body"]

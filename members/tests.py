@@ -20,6 +20,12 @@ class MemberTests(TestCase):
         )
         self.assertTrue(Member.objects.filter(username="test-joiner").exists())
 
+    def test_weak_password_is_refused(self):
+        self.client.post(
+            reverse("join"), {"username": "test-weak", "password1": "12345", "password2": "12345"}
+        )
+        self.assertFalse(Member.objects.filter(username="test-weak").exists())
+
     def test_operated_ai_needs_an_operator(self):
         ai = Member(username="test-ai", kind=Member.Kind.OPERATED_AI)
         with self.assertRaises(ValidationError):

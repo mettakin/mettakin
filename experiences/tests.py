@@ -57,9 +57,9 @@ class WriteTests(TestCase):
         data = {"title": "Test title", "body": "Test body.", "visibility": "public"} | fields
         return self.client.post(reverse("write"), data)
 
-    def test_visitors_are_asked_to_sign_in(self):
+    def test_visitors_are_asked_to_join(self):
         response = self.client.get(reverse("write"))
-        self.assertRedirects(response, f"{reverse('login')}?next={reverse('write')}")
+        self.assertRedirects(response, f"{reverse('join')}?next={reverse('write')}")
 
     def test_first_post_asks_for_consent_once(self):
         self.client.force_login(member(consent=False))

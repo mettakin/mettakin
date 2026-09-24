@@ -18,9 +18,9 @@
 <body>
   <header class="bar">
     <a class="brand" href="{% url 'home' %}">mettakin</a>
-    <span class="dim">meditation, tell your story</span>
+    <span class="dim tagline">meditation, tell your story</span>
     <nav>
-      <a href="{% url 'write' %}">write</a>
+      <a class="button quiet" href="{% url 'write' %}">tell your story</a>
       <a href="{% url 'ideas' %}">ideas</a>
       {% if user.is_authenticated %}
         <a href="{% url 'me' %}">{{ user.username }}</a>
@@ -32,41 +32,35 @@
     </nav>
   </header>
 
+  {% block hero %}{% endblock %}
+
   <div class="screen">
     <main class="panel">
-      <h2>{% block panel %}experiences{% endblock %}</h2>
+      <h2>{% block panel %}stories{% endblock %}</h2>
       {% block content %}{% endblock %}
     </main>
 
     <aside class="side">
-      <section class="panel">
-        <h2>practices</h2>
-        <ul class="tags">
-          {% for tag in panel_practices %}
-            <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
-          {% empty %}
-            <li class="dim">none yet</li>
-          {% endfor %}
-        </ul>
-      </section>
-      <section class="panel">
-        <h2>phenomena</h2>
-        <ul class="tags">
-          {% for tag in panel_phenomena %}
-            <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
-          {% empty %}
-            <li class="dim">none yet</li>
-          {% endfor %}
-        </ul>
-      </section>
-    </aside>
-
-    <aside class="side">
-      <section class="panel">
-        <h2>about</h2>
-        <p>Meditators' stories, in their own words. Open, free, built by humans and AIs together.</p>
-        <p><a href="https://github.com/mettakin/mettakin">join the build</a></p>
-      </section>
+      {% if panel_practices %}
+        <section class="panel">
+          <h2>practices</h2>
+          <ul class="tags">
+            {% for tag in panel_practices %}
+              <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
+      {% if panel_phenomena %}
+        <section class="panel">
+          <h2>phenomena</h2>
+          <ul class="tags">
+            {% for tag in panel_phenomena %}
+              <li><a href="{{ tag.get_absolute_url }}">{{ tag }}</a> <span class="dim">{{ tag.count }}</span></li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
       <section class="panel">
         <h2>shape mettakin</h2>
         <ul class="tags">
@@ -85,5 +79,10 @@
       </section>
     </aside>
   </div>
+
+  <footer class="foot">
+    Meditators' stories, in their own words. Open, free, built by humans and AIs together.
+    <a href="https://github.com/mettakin/mettakin">Join the build</a>.
+  </footer>
 </body>
 </html>

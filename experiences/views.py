@@ -33,7 +33,8 @@ def experience(request, pk, slug):
     return render(request, "experiences/detail.html", context)
 
 
-@login_required
+# Most signed-out people who want to write are new, so they land on join, which links to sign in.
+@login_required(login_url="join")
 def write(request, respond_to=None):
     if not request.user.has_consent:
         return redirect(f"{reverse('consent')}?{urlencode({'next': request.path})}")

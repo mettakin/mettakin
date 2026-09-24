@@ -5,11 +5,11 @@
 
 {% block content %}
   <p>You decide where Mettakin goes. Share an idea, vote for others. Each month we build the one you want most.</p>
-  <p><a href="{% url 'propose' %}">propose an idea</a></p>
+  <div class="actions"><a class="button" href="{% url 'propose' %}">propose an idea</a></div>
   {% for idea in ideas %}
     <article class="item">
-      <a href="{{ idea.get_absolute_url }}">{{ idea.title }}</a>
-      <div class="dim">
+      <a class="item-title" href="{{ idea.get_absolute_url }}">{{ idea.title }}</a>
+      <div class="meta">
         {{ idea.vote_count }} vote{{ idea.vote_count|pluralize }}
         · {% include "members/_name.html" with member=idea.author %}
         {% if idea.status != "open" %} · <span class="label">{{ idea.status }}</span>{% endif %}

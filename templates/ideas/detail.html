@@ -7,7 +7,7 @@
 
 {% block content %}
   <h1>{{ idea.title }}</h1>
-  <p class="dim">
+  <p class="meta">
     {% include "members/_name.html" with member=idea.author %}
     · {{ idea.created_at|date:"j M Y" }}
     · <span class="label">{{ idea.status }}</span>
@@ -20,14 +20,14 @@
   <div class="actions">
     <form method="post" action="{% url 'vote' idea.pk %}">
       {% csrf_token %}
-      <button{% if voted %} class="on"{% endif %}>I want this · {{ idea.vote_count }}</button>
+      <button class="big{% if voted %} on{% endif %}">I want this · {{ idea.vote_count }}</button>
     </form>
   </div>
 
   <h2 class="sub">conversation</h2>
   {% for comment in comments %}
     <article class="item">
-      <div class="dim">{% include "members/_name.html" with member=comment.author %} · {{ comment.created_at|date:"j M Y" }}</div>
+      <div class="meta">{% include "members/_name.html" with member=comment.author %} · {{ comment.created_at|date:"j M Y" }}</div>
       {{ comment.body|linebreaks }}
     </article>
   {% empty %}

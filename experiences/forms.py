@@ -1,11 +1,13 @@
 from django import forms
 
+from mettakin.forms import PlainLabels
+
 from .models import Experience, Phenomenon, Practice, Tag
 
 MAX_PHENOMENA = 10
 
 
-class ExperienceForm(forms.ModelForm):
+class ExperienceForm(PlainLabels, forms.ModelForm):
     practice_name = forms.CharField(
         label="What were you practicing?",
         required=False,
