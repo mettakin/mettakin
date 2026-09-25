@@ -27,12 +27,38 @@
         <a href="{% url 'home' %}?sort=top"{% if top %} class="on"{% endif %}>{% include "_i.html" with name="heart" %}most me too</a>
       </nav>
     </div>
+
     {% for experience in experiences %}
       {% include "experiences/_row.html" %}
     {% empty %}
-      <p class="empty">Oh gosh, are you the first here? <a href="{% url 'write' %}">Well, write something then!</a></p>
+      <p class="empty">
+        Oh gosh, are you the first here?
+        <a href="{% url 'write' %}">Well, write something then!</a>
+      </p>
     {% endfor %}
+
+    {% if page_obj.paginator.num_pages > 1 %}
+      <nav class="pagination" aria-label="Story pagination">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if top %}&sort=top{% endif %}">
+            ← newer
+          </a>
+        {% endif %}
+
+        <span>
+          page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if top %}&sort=top{% endif %}">
+            older →
+          </a>
+        {% endif %}
+      </nav>
+    {% endif %}
   </section>
 {% endblock %}
 
-{% block side %}{% include "experiences/_browse.html" %}{% endblock %}
+{% block side %}
+  {% include "experiences/_browse.html" %}
+{% endblock %}
