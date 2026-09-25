@@ -162,3 +162,60 @@ class TagPageTests(TestCase):
         self.assertNotContains(self.client.get(reverse("home")), "Test phenomenon")
         self.client.force_login(member("reader"))
         self.assertContains(self.client.get(url), "Test phenomenon")
+
+
+class HomePageTests(TestCase):
+
+    def test_home_page_is_paginated(self):
+        author = member()
+
+        for i in range(51):
+            experience(author, title=f"Test experience {i}")
+
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+
+        # The home page should show only 50 experiences per page.
+        for i in range(1, 51):
+            self.assertContains(response, f"Test experience {i}")
+
+        self.assertNotContains(response, "Test experience 0")
+
+    def test_second_page_contains_remaining_experiences(self):
+        author = member()
+
+        for i in range(51):
+            experience(author, title=f"Test experience {i}")
+
+        response = self.client.get(reverse("home"), {"page": 2})
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, "Test experience 0")
+
+        for i in range(1, 51):
+            self.assertNotContains(response, f"Test experience {i}")
+
+    def test_home_page_orders_experiences_newest_first(self):
+        author = member()
+
+        first = experience(author, title="First experience")
+        second = experience(author, title="Second experience")
+        third = experience(author, title="Third experience")
+
+        response = self.client.get(reverse("home"))
+
+        content = response.content.decode()
+
+        self.assertLess(
+            content.index("Third experience"),
+            content.index("Second experience"),
+        )
+        self.assertLess(
+            content.index("Second experience"),
+            content.index("First experience"),
+        )
+
+
+

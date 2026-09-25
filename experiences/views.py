@@ -7,6 +7,8 @@ from django.views.decorators.http import require_POST
 
 from ideas.models import Idea
 
+from django.core.paginator import Paginator
+
 from .forms import ExperienceForm
 from .models import Experience, Phenomenon, Practice, Resonance
 
@@ -30,12 +32,26 @@ def browse(member):
 
 def home(request):
     top = request.GET.get("sort") == "top"
-    order = ["-resonance_count", "-created_at"] if top else ["-created_at"]
-    experiences = Experience.objects.listed(request.user).order_by(*order)[:50]
+    order = (
+        ["-resonance_count", "-created_at", "-id"]
+        if top
+        else ["-created_at", "-id"]
+    )
+
+    experiences = Experience.objects.listed(request.user).order_by(*order)
+
+    paginator = Paginator(experiences, 50)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
     return render(
         request,
         "experiences/list.html",
-        {"experiences": experiences, "top": top} | browse(request.user),
+        {
+            "experiences": page_obj,
+            "page_obj": page_obj,
+            "top": top,
+        }
+        | browse(request.user),
     )
 
 
