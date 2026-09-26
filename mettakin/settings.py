@@ -100,3 +100,32 @@ SECURE_CSP = {"default-src": [CSP.SELF]}
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+
+# Server errors reach the steward by email, without member content. Off when unset.
+ALERT_EMAIL = env("ALERT_EMAIL", "")
+EMAIL_HOST = env("EMAIL_HOST", "")
+EMAIL_PORT = int(env("EMAIL_PORT", "465"))
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", "")
+EMAIL_TIMEOUT = 10
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER or "webmaster@localhost"
+
+# Replaces Django's error email, which carries the request and local variables.
+# Nothing from django.security or 404s is mailed.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"debug": {"()": "django.utils.log.RequireDebugTrue"}},
+    "handlers": {
+        # Development only: production logs no messages, since URLs can hold titles.
+        "console": {"class": "logging.StreamHandler", "filters": ["debug"]},
+        "alert": {"class": "mettakin.alerts.AlertHandler", "level": "ERROR"},
+        "journal": {"class": "logging.StreamHandler"},
+    },
+    "loggers": {
+        "mettakin.deletions": {"handlers": ["journal"], "level": "INFO", "propagate": False},
+        "django": {"handlers": ["console"], "level": "INFO"},
+        "django.request": {"handlers": ["console", "alert"], "level": "ERROR", "propagate": False},
+    },
+}

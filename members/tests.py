@@ -1,7 +1,10 @@
+import io
 import json
 
+from django.core import mail
 from django.core.exceptions import ValidationError
-from django.test import TestCase
+from django.core.management import call_command
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from experiences.models import Experience
@@ -55,6 +58,22 @@ class MemberTests(TestCase):
         self.client.post(reverse("delete"))
         self.assertFalse(Member.objects.exists())
         self.assertFalse(Experience.objects.exists())
+
+    @override_settings(ALERT_EMAIL="test-steward@example.com")
+    def test_deletion_leaves_a_trail_with_the_number_only(self):
+        pk = self.member.pk
+        self.client.force_login(self.member)
+        with self.assertLogs("mettakin.deletions") as logs:
+            self.client.post(reverse("delete"))
+        self.assertEqual(logs.output, [f"WARNING:mettakin.deletions:Member {pk} deleted"])
+        self.assertEqual(mail.outbox[0].subject, f"Member {pk} deleted")
+        self.assertIn(f"reapply_deletions {pk}", mail.outbox[0].body)
+        self.assertNotIn("test-member", mail.outbox[0].subject + mail.outbox[0].body)
+
+    def test_reapply_deletions_after_a_restore(self):
+        other = Member.objects.create_user("test-other")
+        call_command("reapply_deletions", str(self.member.pk), "999999", stdout=io.StringIO())
+        self.assertEqual(list(Member.objects.all()), [other])
 
     def test_next_never_leaves_the_site(self):
         self.client.force_login(self.member)

@@ -1,7 +1,15 @@
+import logging
+
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils import timezone
+
+from mettakin.alerts import notify
+
+deletions = logging.getLogger("mettakin.deletions")
 
 # Raise when the consent text changes in substance. Members are then asked once more.
 CONSENT_VERSION = 1
@@ -45,3 +53,16 @@ class Member(AbstractUser):
         self.consent_given_at = None
         self.consent_version = None
         self.save(update_fields=["consent_given_at", "consent_version"])
+
+
+@receiver(post_delete, sender=Member)
+def leave_deletion_trail(sender, instance, **kwargs):
+    """A restore brings back members deleted after the dump. This trail, kept outside
+    the database, says whom to delete again. The number only, never a name."""
+    deletions.warning("Member %s deleted", instance.pk)
+    notify(
+        f"Member {instance.pk} deleted",
+        f"If you restore a backup older than today, delete them again:\n"
+        f"mettakin-manage reapply_deletions {instance.pk}\n\n"
+        "Delete this email after 30 days, once no backup holds them.",
+    )

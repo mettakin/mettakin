@@ -6,3 +6,9 @@ uv_version: 0.11.6
 app_dir: /srv/mettakin/app
 # Public half of the key that proves this domain to the MCP Registry. Leave empty if you don't publish there.
 mcp_registry_proof: "v=MCPv1; k=ed25519; p=H5LT3bkrMRfvE95T/jaIf8bnQRx9fVYaeaP1Sbtd5mY="
+# Server errors and account deletions are emailed to admin_email through this server,
+# once vault_email_password is in the vault.
+email_host: h22.seohost.pl
+# Public age key the nightly backups are encrypted to. Needed once inventory.ini has a [backup] server.
+# Its private half lives offline only. A change here in a pull request is a red flag.
+backup_age_recipient: ""

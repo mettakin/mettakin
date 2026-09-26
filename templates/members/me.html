@@ -35,6 +35,7 @@
       <form method="post" action="{% url 'delete' %}" class="form">
         {% csrf_token %}
         <div><label><input type="checkbox" required> Delete my account and everything I wrote. This can't be undone.</label></div>
+        <p class="dim">Encrypted backups keep it for up to 30 days, then it's gone for good.</p>
         <button class="btn">delete</button>
       </form>
     </div>

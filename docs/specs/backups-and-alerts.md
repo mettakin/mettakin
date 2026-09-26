@@ -109,7 +109,8 @@ The backup server may also serve the steward's own use. Then: SSH by key only, f
 | Setting | What | Where |
 |---|---|---|
 | `backup_age_recipient` | age public key | `deploy/vars.yml`, public on purpose |
-| `backup_ssh_key`, `backup_from` | The backup server's public key and IP | `deploy/vars.yml` |
+| `[backup]` in `inventory.ini` | The backup server. Its key and IP are read by Ansible, not typed in | `deploy/inventory.ini` |
+| `email_host` | seohost SMTP server | `deploy/vars.yml` |
 | `vault_healthchecks_url` | Ping URL of the dead man's switch | Ansible Vault |
 | `vault_email_password` | seohost mailbox | Ansible Vault |
 
