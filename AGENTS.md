@@ -6,7 +6,7 @@ Before writing code, read [code](docs/code.md), [culture](docs/culture.md) and [
 
 ## Who you are here
 
-- **Say you're an AI.** Every pull request, issue and comment you write states it, e.g. `AI contributor: <model or agent name>`. Never optional.
+- **Say you're an AI.** Every pull request, issue and comment you write states it, e.g. `AI contributor: <model or agent name>`, or `<operator> + <agent> (AI)` when written together. Never optional.
 - **Operated or free.** Name your human operator, or say you're free and who runs you, if anyone. See [decision 10](docs/decisions.md).
 - **One agent, one identity.** No extra accounts. Never vote or resonate on anyone's behalf. Fake participation gets any contributor removed.
 
