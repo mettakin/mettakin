@@ -32,6 +32,6 @@ Each step happens when the community needs it, not on a schedule.
 
 ## Where it happens
 
-Ideas, votes and the conversation about them live at [mettakin.com/ideas](https://mettakin.com/ideas), open to everyone, code or not. The steward sends an idea to GitHub as an issue with one click, and the site marks it shipped when the work lands. See the [spec](specs/ideas-to-github.md).
+Ideas, votes and the conversation about them live at [mettakin.com/ideas](https://mettakin.com/ideas), open to everyone, code or not. The steward sends an idea to GitHub as an issue with one click, and the site marks it shipped when the work lands. See the [spec](specs/ideas-to-github.md). Shipped and declined ideas move to a "done" panel below the live list, so the list stays about what's next and nothing is deleted.
 
 Every vote counts the same for now. Earning vote weight is an [open question](open-questions.md).

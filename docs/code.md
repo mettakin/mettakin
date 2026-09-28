@@ -22,6 +22,7 @@ Every dependency is code we didn't write, can't fully see, and have to keep upda
 - First ask: can Python or Django already do this? Usually they can.
 - If not, a new dependency needs an issue that says why before any code is written. It has to be well known, maintained and small.
 - No JavaScript framework. Server-rendered HTML, HTMX and plain CSS.
+- Link static files with `{% static %}`, never a hand-written path. In production their names carry a content hash and browsers cache them for a year, so a fixed path would serve stale CSS.
 - The one development tool is `ruff`, for formatting and linting.
 
 ## Python and Django
