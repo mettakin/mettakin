@@ -16,7 +16,12 @@ def voted_ids(member):
 
 
 def ideas(request):
-    context = {"ideas": Idea.objects.ranked(), "voted": voted_ids(request.user)}
+    finished = [Idea.Status.SHIPPED, Idea.Status.DECLINED]
+    context = {
+        "ideas": Idea.objects.ranked().exclude(status__in=finished),
+        "done": Idea.objects.ranked().filter(status__in=finished).order_by("-created_at", "-pk"),
+        "voted": voted_ids(request.user),
+    }
     return render(request, "ideas/list.html", context)
 
 

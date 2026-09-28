@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
@@ -94,6 +95,18 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Hashed file names in production: changed CSS gets a new URL, so no browser
+# keeps a stale copy. Development and tests run without collectstatic.
+HASHED_STATIC = not DEBUG and "test" not in sys.argv[1:2]
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+        if HASHED_STATIC
+        else "django.contrib.staticfiles.storage.StaticFilesStorage"
+    },
+}
 
 # Nothing from other origins: no trackers, no third-party scripts.
 SECURE_CSP = {"default-src": [CSP.SELF]}

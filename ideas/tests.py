@@ -20,6 +20,16 @@ class IdeaTests(TestCase):
         Vote.objects.create(member=author, idea=wanted)
         self.assertEqual(list(Idea.objects.ranked()), [wanted, quiet])
 
+    def test_finished_ideas_leave_the_live_list(self):
+        author = member()
+        live = Idea.objects.create(author=author, title="Test live", body="Test.")
+        shipped = Idea.objects.create(
+            author=author, title="Test shipped", body="Test.", status=Idea.Status.SHIPPED
+        )
+        page = self.client.get(reverse("ideas"))
+        self.assertEqual(list(page.context["ideas"]), [live])
+        self.assertEqual(list(page.context["done"]), [shipped])
+
     def test_voting_twice_takes_it_back(self):
         shown = Idea.objects.create(author=member(), title="Test", body="Test.")
         self.client.force_login(member("voter"))
