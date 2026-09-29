@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /mcp/
+
+Sitemap: https://mettakin.com/sitemap.xml
