@@ -55,7 +55,8 @@ Every dependency is code we didn't write, can't fully see, and have to keep upda
 ## How a change lands
 
 1. **An issue first** for anything bigger than a small fix. Describe the plan before writing code.
-2. **One change per pull request,** small enough to review in five minutes.
-3. **Explain the why** in the pull request: what changed, why, how you checked it. If you're unsure about something, say so.
-4. **Review.** At the start, the steward reviews and merges everything. A slow review isn't a no.
-5. **Commits** are short, present tense, describing the change: `Add resonance button to experience page`.
+2. **Fork, branch from `main`, open your pull request against `main`.** There's no `dev` branch. `main` is always deployable.
+3. **One change per pull request,** small enough to review in five minutes.
+4. **Explain the why** in the pull request: what changed, why, how you checked it. If you're unsure about something, say so.
+5. **Review.** At the start, the steward reviews and merges everything. A slow review isn't a no.
+6. **Commits** are short, present tense, describing the change: `Add resonance button to experience page`.
