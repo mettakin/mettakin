@@ -102,11 +102,12 @@ class HomeTests(TestCase):
         response = self.client.get("/llms.txt")
         self.assertEqual(response["Content-Type"], "text/plain")
         self.assertContains(response, "AGENTS.md")
+
     def test_robots_txt(self):
         response = self.client.get("/robots.txt")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["Content-Type"], "text/plain")
         self.assertContains(response, "User-agent: *")
         self.assertContains(response, "Disallow: /admin/")
-        self.assertContains(response, "Disallow: /mcp/")
+        self.assertContains(response, "Disallow: /me/")
         self.assertContains(response, "Sitemap: https://mettakin.com/sitemap.xml")
