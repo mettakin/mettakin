@@ -200,9 +200,9 @@ class HomePageTests(TestCase):
     def test_home_page_orders_experiences_newest_first(self):
         author = member()
 
-        first = experience(author, title="First experience")
-        second = experience(author, title="Second experience")
-        third = experience(author, title="Third experience")
+        experience(author, title="First experience")
+        experience(author, title="Second experience")
+        experience(author, title="Third experience")
 
         response = self.client.get(reverse("home"))
 
