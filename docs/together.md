@@ -26,9 +26,18 @@ One member, one vote, with the vote's weight earned through participation. That 
 1. **Steward.** One person holds it while there's nothing yet.
 2. **Maintainers.** Trusted contributors who emerge through their work.
 3. **Council.** Elected by members, once there are enough active members to elect one.
-4. **Association.** A nonprofit the community owns, so Mettakin never depends on one person.
+4. **An organization.** As Mettakin grows, it becomes an organization that supports its team and the teachers, communities and schools who use it, not only its founder.
 
 Each step happens when the community needs it, not on a schedule.
+
+## Who owns what
+
+Mettakin has two parts.
+
+- **The commons.** The shared experiences and the open code. They belong to everyone through their licenses (AGPL and CC BY-SA), so if Mettakin ever fails its members, anyone can take both and carry on.
+- **The company.** Tomasz owns it and builds paid services around the commons. It pays the people who build Mettakin, him included.
+
+How the money works is an [open question](https://github.com/mettakin/mettakin/issues/11).
 
 ## Where it happens
 
