@@ -165,7 +165,6 @@ class TagPageTests(TestCase):
 
 
 class HomePageTests(TestCase):
-
     def test_home_page_is_paginated(self):
         author = member()
 
@@ -200,22 +199,19 @@ class HomePageTests(TestCase):
     def test_home_page_orders_experiences_newest_first(self):
         author = member()
 
-        experience(author, title="First experience")
-        experience(author, title="Second experience")
-        experience(author, title="Third experience")
+        experience(author, title="Test experience A")
+        experience(author, title="Test experience B")
+        experience(author, title="Test experience C")
 
         response = self.client.get(reverse("home"))
 
         content = response.content.decode()
 
         self.assertLess(
-            content.index("Third experience"),
-            content.index("Second experience"),
+            content.index("Test experience C"),
+            content.index("Test experience B"),
         )
         self.assertLess(
-            content.index("Second experience"),
-            content.index("First experience"),
+            content.index("Test experience B"),
+            content.index("Test experience A"),
         )
-
-
-

@@ -1,14 +1,12 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.views.decorators.http import require_POST
-from django.core.paginator import Paginator
 
 from ideas.models import Idea
-
-
 
 from .forms import ExperienceForm
 from .models import Experience, Phenomenon, Practice, Resonance
@@ -33,11 +31,7 @@ def browse(member):
 
 def home(request):
     top = request.GET.get("sort") == "top"
-    order = (
-        ["-resonance_count", "-created_at", "-id"]
-        if top
-        else ["-created_at", "-id"]
-    )
+    order = ["-resonance_count", "-created_at", "-id"] if top else ["-created_at", "-id"]
 
     experiences = Experience.objects.listed(request.user).order_by(*order)
 
