@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -30,12 +31,22 @@ def browse(member):
 
 def home(request):
     top = request.GET.get("sort") == "top"
-    order = ["-resonance_count", "-created_at"] if top else ["-created_at"]
-    experiences = Experience.objects.listed(request.user).order_by(*order)[:50]
+    order = ["-resonance_count", "-created_at", "-id"] if top else ["-created_at", "-id"]
+
+    experiences = Experience.objects.listed(request.user).order_by(*order)
+
+    paginator = Paginator(experiences, 50)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
     return render(
         request,
         "experiences/list.html",
-        {"experiences": experiences, "top": top} | browse(request.user),
+        {
+            "experiences": page_obj,
+            "page_obj": page_obj,
+            "top": top,
+        }
+        | browse(request.user),
     )
 
 
