@@ -22,3 +22,4 @@ select = ["E", "F", "W", "I", "UP", "B", "DJ", "S"]
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests.py" = ["S"]
+"**/test_*.py" = ["S"]

@@ -1,0 +1,50 @@
+#!/bin/bash
+# Pulls tonight's encrypted dump from the main server, checks it, keeps 30 days (never fewer than 7).
+set -euo pipefail
+
+dir={{ pull_dir }}
+new="$dir/mettakin-$(date -u +%F).dump.age"
+healthchecks=$(cat {{ pull_home }}/healthchecks-url 2>/dev/null || true)
+
+ping() {
+    [[ -z $healthchecks ]] || curl -fsS -m 10 --retry 3 "$healthchecks$1" >/dev/null || true
+}
+
+finish() {
+    local status=$?
+    if (( status != 0 )); then
+        # The main server's reason (like a full disk) came back on stderr.
+        [[ ! -f $new.stderr ]] || cat "$new.stderr" >&2
+        ping /fail
+    fi
+    rm -f "$new.partial" "$new.stderr"
+}
+trap finish EXIT
+
+# The main server's key only runs the dump. A failed pg_dump fails ssh too, thanks to pipefail there.
+ssh -4 -o BatchMode=yes mettakin-backup@{{ main_host }} >"$new.partial" 2>"$new.stderr"
+
+if [[ $(head -c 21 "$new.partial") != "age-encryption.org/v1" ]]; then
+    echo "Not an age file" >&2
+    exit 1
+fi
+
+last=$(ls -1t "$dir"/*.dump.age 2>/dev/null | head -1 || true)
+if [[ -n $last && $(stat -c%s "$new.partial") -lt $(( $(stat -c%s "$last") / 2 )) ]]; then
+    echo "Less than half the size of $last" >&2
+    exit 1
+fi
+
+sync "$new.partial"
+mv "$new.partial" "$new"
+mv "$new.stderr" "$new.counts"
+sync "$dir"
+echo "Saved $(basename "$new"): $(cat "$new.counts") sha256=$(sha256sum "$new" | cut -c1-64)"
+
+ls -1t "$dir"/*.dump.age | tail -n +8 | while read -r old; do
+    if [[ -n $(find "$old" -mtime +30) ]]; then
+        rm -f "$old" "$old.counts"
+    fi
+done
+
+ping ""

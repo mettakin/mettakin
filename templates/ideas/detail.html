@@ -14,7 +14,7 @@
         <span>{% include "_i.html" with name="user" %}{% include "members/_name.html" with member=idea.author %}</span>
         <span>{{ idea.created_at|age }} ago</span>
         <span class="label">{{ idea.status }}</span>
-        {% if idea.issue_url %}<a href="{{ idea.issue_url }}">being built</a>{% endif %}
+        {% if idea.issue_url %}<a href="{{ idea.issue_url }}">builders are on it</a>{% endif %}
       </div>
       <div class="body">{{ idea.body|linebreaks }}</div>
       {% if idea.note %}<div class="body dim">{{ idea.note|linebreaks }}</div>{% endif %}

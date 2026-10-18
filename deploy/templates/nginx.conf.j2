@@ -42,7 +42,8 @@ server {
 
     location /static/ {
         alias {{ app_dir }}/staticfiles/;
-        expires 7d;
+        # Names carry a content hash, so a file never changes under its URL.
+        expires 1y;
     }
 
     location = /mcp {

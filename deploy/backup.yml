@@ -1,0 +1,192 @@
+# Nightly encrypted backups, pulled by a separate server. See docs/specs/backups-and-alerts.md.
+# Skipped when inventory.ini has no [backup] server.
+
+- name: Give the backup server a key
+  hosts: backup
+  vars_files: [vars.yml, vault.yml]
+  vars:
+    pull_home: /var/lib/mettakin-pull
+  tasks:
+    - name: Check the backups can be encrypted
+      ansible.builtin.assert:
+        that: backup_age_recipient | length > 0
+        fail_msg: Set backup_age_recipient in vars.yml first.
+
+    - name: Create the pull user with its own key
+      ansible.builtin.user:
+        name: mettakin-pull
+        system: true
+        home: "{{ pull_home }}"
+        shell: /usr/sbin/nologin
+        generate_ssh_key: true
+        ssh_key_type: ed25519
+      register: pull_user
+
+- name: Let the backup server start a dump, and nothing else
+  hosts: mettakin
+  vars_files: [vars.yml, vault.yml]
+  tasks:
+    - name: Prepare the main server
+      when: groups.backup | default([]) | length > 0
+      block:
+        - name: Install age
+          ansible.builtin.apt:
+            name: age
+
+        # Not the app user: its nologin shell stops forced commands. Not root: Postgres has no root role.
+        - name: Create the backup user
+          ansible.builtin.user:
+            name: mettakin-backup
+            system: true
+            shell: /bin/bash
+
+        - name: Check the backup database role
+          ansible.builtin.command: psql -tAc "SELECT 1 FROM pg_roles WHERE rolname = 'mettakin-backup'"
+          become: true
+          become_user: postgres
+          register: backup_role
+          changed_when: false
+
+        - name: Create a read-only database role for backups
+          ansible.builtin.command: psql -c 'CREATE ROLE "mettakin-backup" LOGIN IN ROLE pg_read_all_data'
+          become: true
+          become_user: postgres
+          when: backup_role.stdout != "1"
+
+        - name: Install the dump script
+          ansible.builtin.template:
+            src: templates/backup-dump.j2
+            dest: /usr/local/bin/mettakin-backup-dump
+            mode: "0755"
+
+        - name: Create the backup user's SSH directory
+          ansible.builtin.file:
+            path: /home/mettakin-backup/.ssh
+            state: directory
+            owner: mettakin-backup
+            mode: "0700"
+
+        - name: Accept only the backup server's key, only for the dump
+          ansible.builtin.copy:
+            dest: /home/mettakin-backup/.ssh/authorized_keys
+            content: |
+              {% for host in groups.backup %}
+              restrict,from="{{ hostvars[host].ansible_default_ipv4.address }}",command="/usr/local/bin/mettakin-backup-dump" {{ hostvars[host].pull_user.ssh_public_key }}
+              {% endfor %}
+            owner: mettakin-backup
+            mode: "0600"
+
+        - name: Read this server's host key, so the backup server can pin it
+          ansible.builtin.slurp:
+            src: /etc/ssh/ssh_host_ed25519_key.pub
+          register: host_key
+
+- name: Pull a dump every night
+  hosts: backup
+  vars_files: [vars.yml, vault.yml]
+  vars:
+    pull_home: /var/lib/mettakin-pull
+    pull_dir: /var/lib/mettakin-pull/dumps
+    main_host: "{{ groups.mettakin[0] }}"
+  tasks:
+    - name: Install packages
+      ansible.builtin.apt:
+        name: [curl, ufw, unattended-upgrades]
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Allow SSH with keys only
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/10-mettakin.conf
+        content: |
+          PasswordAuthentication no
+          PermitRootLogin prohibit-password
+      notify: Reload ssh
+
+    - name: Open only SSH
+      ansible.builtin.command: ufw allow 22/tcp
+      register: rule
+      changed_when: "'Skipping' not in rule.stdout"
+
+    - name: Check the firewall
+      ansible.builtin.command: ufw status
+      register: firewall
+      changed_when: false
+
+    - name: Turn the firewall on
+      ansible.builtin.command: ufw --force enable
+      when: "'inactive' in firewall.stdout"
+
+    - name: Install security updates automatically
+      ansible.builtin.copy:
+        dest: /etc/apt/apt.conf.d/20auto-upgrades
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Unattended-Upgrade "1";
+
+    - name: Create the dump directory, readable by the pull user only
+      ansible.builtin.file:
+        path: "{{ pull_dir }}"
+        state: directory
+        owner: mettakin-pull
+        mode: "0700"
+
+    - name: Pin the main server's host key
+      ansible.builtin.copy:
+        dest: "{{ pull_home }}/.ssh/known_hosts"
+        content: "{{ main_host }} {{ hostvars[main_host].host_key.content | b64decode }}"
+        owner: mettakin-pull
+        mode: "0644"
+
+    - name: Store the dead man's switch URL
+      ansible.builtin.copy:
+        dest: "{{ pull_home }}/healthchecks-url"
+        content: "{{ vault_healthchecks_url | default('') }}"
+        owner: mettakin-pull
+        mode: "0600"
+
+    - name: Install the pull script
+      ansible.builtin.template:
+        src: templates/backup-pull.j2
+        dest: /usr/local/bin/mettakin-backup-pull
+        mode: "0755"
+
+    - name: Install the pull service and timer
+      ansible.builtin.copy:
+        dest: "/etc/systemd/system/{{ item.name }}"
+        content: "{{ item.content }}"
+      loop:
+        - name: mettakin-backup-pull.service
+          content: |
+            [Unit]
+            Description=Pull tonight's encrypted Mettakin dump
+
+            [Service]
+            Type=oneshot
+            User=mettakin-pull
+            ExecStart=/usr/local/bin/mettakin-backup-pull
+        - name: mettakin-backup-pull.timer
+          content: |
+            [Unit]
+            Description=Pull a Mettakin dump every night
+
+            [Timer]
+            OnCalendar=*-*-* 03:00 UTC
+            RandomizedDelaySec=15m
+            Persistent=true
+
+            [Install]
+            WantedBy=timers.target
+
+    - name: Start the timer
+      ansible.builtin.systemd_service:
+        name: mettakin-backup-pull.timer
+        enabled: true
+        state: started
+        daemon_reload: true
+
+  handlers:
+    - name: Reload ssh
+      ansible.builtin.systemd_service:
+        name: ssh
+        state: reloaded

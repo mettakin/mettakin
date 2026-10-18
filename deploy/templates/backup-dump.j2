@@ -1,0 +1,18 @@
+#!/bin/bash
+# Run by the backup server over SSH, through a forced command. Ignores whatever command it's sent.
+# Writes the encrypted dump to stdout and the row counts to stderr.
+set -euo pipefail
+
+used=$(df --output=pcent / | tail -1 | tr -dc 0-9)
+if (( used > 85 )); then
+    echo "Disk is ${used}% full" >&2
+    exit 1
+fi
+
+psql -d mettakin -tAc "SELECT 'members=' || (SELECT count(*) FROM members_member)
+    || ' experiences=' || (SELECT count(*) FROM experiences_experience)
+    || ' ideas=' || (SELECT count(*) FROM ideas_idea)" >&2
+
+# Sessions are left out: secret, and useless after a restore.
+pg_dump --format=custom --no-owner --no-acl --exclude-table-data=django_session mettakin \
+    | age -r "{{ backup_age_recipient }}"

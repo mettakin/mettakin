@@ -22,6 +22,24 @@
       <p class="empty">No ideas yet. Yours could be the first.</p>
     {% endfor %}
   </section>
+  {% if done %}
+    <section class="panel">
+      <div class="panel-head">{% include "_i.html" with name="bulb" %}<strong>done</strong><span>shipped or declined</span></div>
+      {% for idea in done %}
+        <article class="row">
+          {% include "ideas/_vote.html" %}
+          <div class="row-main">
+            <a class="row-title" href="{{ idea.get_absolute_url }}">{{ idea.title }}</a>
+            <div class="meta">
+              <span>{% include "_i.html" with name="user" %}{% include "members/_name.html" with member=idea.author %}</span>
+              <span class="label">{{ idea.status }}</span>
+              <span>{{ idea.created_at|age }}</span>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </section>
+  {% endif %}
 {% endblock %}
 
 {% block side %}
