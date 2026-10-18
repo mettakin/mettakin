@@ -9,6 +9,8 @@ mcp_registry_proof: "v=MCPv1; k=ed25519; p=H5LT3bkrMRfvE95T/jaIf8bnQRx9fVYaeaP1S
 # Server errors and account deletions are emailed to admin_email through this server,
 # once vault_email_password is in the vault.
 email_host: h22.seohost.pl
+# Where the admin's "Send to builders" opens issues, once vault_github_token is in the vault.
+github_repo: mettakin/mettakin
 # Public age key the nightly backups are encrypted to. Needed once inventory.ini has a [backup] server.
 # Its private half lives offline only. A change here in a pull request is a red flag.
 backup_age_recipient: ""

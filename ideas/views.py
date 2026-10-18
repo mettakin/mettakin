@@ -1,10 +1,15 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from members.views import safe_next
 
+from . import github
 from .forms import CommentForm, IdeaForm
 from .models import Idea, Vote
 
@@ -68,3 +73,17 @@ def vote(request, pk):
     if not created:
         cast.delete()
     return redirect(back)
+
+
+# The signature replaces the CSRF token.
+@csrf_exempt
+@require_POST
+def github_webhook(request):
+    if not github.is_signed(request.body, request.headers.get("X-Hub-Signature-256", "")):
+        return HttpResponseForbidden()
+    try:
+        payload = json.loads(request.body)
+    except ValueError:
+        return HttpResponseBadRequest()
+    github.apply_event(request.headers.get("X-GitHub-Event", ""), payload)
+    return HttpResponse(status=204)

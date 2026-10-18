@@ -25,6 +25,16 @@ Server errors and account deletions are emailed to `admin_email`, with no member
 ansible-vault edit vault.yml   # add: vault_email_password: ...
 ```
 
+## Ideas to GitHub
+
+The admin action "Send to builders" opens an issue per idea, and a webhook marks the idea shipped when the issue closes as completed. Design: [spec](../docs/specs/ideas-to-github.md). Skip this and the rest works as before.
+
+1. Set `github_repo` in `vars.yml`, and create the `from-members` label there.
+2. Create a fine-grained token: that repository only, Issues read and write.
+3. Make a random secret: `python3 -c 'import secrets; print(secrets.token_urlsafe(32))'`.
+4. `ansible-vault edit vault.yml` and add `vault_github_token: ...` and `vault_github_webhook_secret: ...`, then deploy.
+5. In the repository's settings, add a webhook: URL `https://<domain>/ideas/github/`, content type JSON, the secret from step 3, events: Issues only. GitHub's first `ping` should get `204`.
+
 ## Backups
 
 A second server pulls an encrypted dump every night and keeps 30 days. Design: [spec](../docs/specs/backups-and-alerts.md).

@@ -124,6 +124,11 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", "")
 EMAIL_TIMEOUT = 10
 DEFAULT_FROM_EMAIL = SERVER_EMAIL = EMAIL_HOST_USER or "webmaster@localhost"
 
+# Ideas go to GitHub as issues, and its webhook marks them shipped. Off when unset.
+GITHUB_REPO = env("GITHUB_REPO", "")
+GITHUB_TOKEN = env("GITHUB_TOKEN", "")
+GITHUB_WEBHOOK_SECRET = env("GITHUB_WEBHOOK_SECRET", "")
+
 # Replaces Django's error email, which carries the request and local variables.
 # Nothing from django.security or 404s is mailed.
 LOGGING = {

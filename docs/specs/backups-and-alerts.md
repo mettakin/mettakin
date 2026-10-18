@@ -1,6 +1,6 @@
 # Spec: backups and alerts
 
-Status: planned. Decision [15](../decisions.md).
+Status: built. Each part turns on once its [settings](#settings) exist. Decision [15](../decisions.md).
 
 ## Why
 

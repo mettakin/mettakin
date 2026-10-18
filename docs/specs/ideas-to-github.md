@@ -1,6 +1,6 @@
 # Spec: ideas to GitHub
 
-Status: planned. Decision [14](../decisions.md).
+Status: built, waiting for the steward's token and webhook. Decision [14](../decisions.md).
 
 ## Why
 

@@ -9,6 +9,7 @@
       <form method="post" class="form">
         {% csrf_token %}
         {{ form.as_div }}
+        <p class="dim">Ideas are public and may be copied to GitHub, where builders work.</p>
         <button class="btn primary big">{% include "_i.html" with name="spark" %}suggest</button>
       </form>
     </div>
